@@ -1,0 +1,181 @@
+<template>
+  <div class="app-container">
+    <div class="filter-container">
+      <!-- <el-input v-model="listQuery.project" placeholder="Project" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
+        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
+      </el-select>
+      <el-select v-model="listQuery.type" placeholder="Type" clearable class="filter-item" style="width: 130px">
+        <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key" />
+      </el-select>
+      <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
+        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
+      </el-select> -->
+
+      <el-row class="demo-autocomplete">
+        <el-col :span="4">
+          Project：
+          <el-autocomplete class="inline-input" v-model="listQuery.project" :fetch-suggestions="queryProjects" placeholder="请输入内容" @select="handleSelect">
+          </el-autocomplete>
+        </el-col>
+        <el-col :span="4">
+          Owner:
+          <el-autocomplete class="inline-input" v-model="listQuery.owner" :fetch-suggestions="queryOwners" placeholder="请输入内容" @select="handleSelect">
+          </el-autocomplete>
+        </el-col>
+        <el-col :span="4">
+          Depository:
+          <el-autocomplete class="inline-input" v-model="listQuery.depository" :fetch-suggestions="queryDepositorys" placeholder="请输入内容" @select="handleSelect">
+          </el-autocomplete>
+        </el-col>
+        <el-col :span="4">
+          Branch:
+          <el-autocomplete class="inline-input" v-model="listQuery.branch" :fetch-suggestions="queryBranchs" placeholder="请输入内容" @select="handleSelect">
+          </el-autocomplete>
+        </el-col>
+        <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+          Search
+        </el-button>
+      </el-row>
+      <br>
+    </div>
+
+    <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
+      <el-table-column align="center" label="ID" width="95">
+        <template slot-scope="scope">
+          {{ scope.$index + 1 + (listQuery.page - 1) * listQuery.limit }}
+        </template>
+      </el-table-column>
+      <el-table-column label="Project">
+        <template slot-scope="scope">
+          {{ scope.row.project }}
+        </template>
+      </el-table-column>
+      <el-table-column label="Owner" width="210" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.owner }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="Depository" width="410" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.depository }}
+        </template>
+      </el-table-column>
+      <el-table-column label="Branch" width="310" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.branch }}
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <pagination v-show="total > 0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+  </div>
+</template>
+
+<script>
+import { fetchList, getProjects, getOwners, getDepositorys, getBranchs } from "@/api/branch";
+import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
+
+export default {
+  name: "Branch",
+  components: {
+    Pagination,
+  },
+  filters: {
+    statusFilter(status) {
+      const statusMap = {
+        published: "success",
+        draft: "gray",
+        deleted: "danger",
+      };
+      return statusMap[status];
+    },
+  },
+  data() {
+    return {
+      list: null,
+      listLoading: true,
+      tableKey: 0,
+      list: null,
+      total: 0,
+      listLoading: true,
+      listQuery: {
+        page: 1,
+        limit: 10,
+        project: undefined,
+        owner: undefined,
+        depository: undefined,
+        branch: undefined,
+        sort: "+id",
+      },
+      listTest: null,
+    };
+  },
+  created() {
+    this.getList();
+    this.getQueryCondition();
+  },
+  methods: {
+    getList() {
+      this.listLoading = true;
+      fetchList(this.listQuery).then((response) => {
+        this.list = response.data.items;
+        this.total = response.data.total;
+        this.listLoading = false;
+        // Just to simulate the time of the request
+        // setTimeout(() => { this.listLoading = false; }, 0 * 1000);
+      });
+    },
+    getQueryCondition() {
+      getProjects().then((response) => {
+        this.projects = response.data.items;
+      });
+      getOwners().then((response) => {
+        this.owners = response.data.items;
+      });
+      getDepositorys().then((response) => {
+        this.depositorys = response.data.items;
+      });
+      getBranchs().then((response) => {
+        this.branchs = response.data.items;
+      });
+    },
+    handleFilter() {
+      this.listQuery.page = 1;
+      this.getList();
+    },
+    queryProjects(queryString, cb) {
+      var projects = this.projects;
+      var results = queryString ? projects.filter(this.createFilter(queryString)) : projects;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    queryOwners(queryString, cb) {
+      var owners = this.owners;
+      var results = queryString ? owners.filter(this.createFilter(queryString)) : owners;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    queryDepositorys(queryString, cb) {
+      var depositorys = this.depositorys;
+      var results = queryString ? depositorys.filter(this.createFilter(queryString)) : depositorys;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    queryBranchs(queryString, cb) {
+      var branchs = this.branchs;
+      var results = queryString ? branchs.filter(this.createFilter(queryString)) : branchs;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    createFilter(queryString) {
+      return (restaurant) => {
+        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      };
+    },
+    handleSelect(item) {
+      console.log(item.value);
+    },
+  },
+};
+</script>
