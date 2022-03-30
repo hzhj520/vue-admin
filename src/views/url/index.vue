@@ -2,63 +2,88 @@
   <div class="mixin-components-container">
     <el-row>
       <el-card class="box-card">
-        <div style="margin-bottom:200px;">
+        <div style="margin-bottom:100px;">
           <el-col :span="8" class="text-center">
-            <router-link class="pan-btn blue-btn" to="/documentation/index">
-              Documentation
-            </router-link>
+            <a class="pan-btn blue-btn" href="http://gerrit.eswin.cn" target="_blank">
+            <img src="http://gerrit.eswin.cn/static/jira-logo-scaled.png?x-oss-process=image/resize,w_50" alt="">
+              代码评审
+            </a>
           </el-col>
           <el-col :span="8" class="text-center">
-            <router-link class="pan-btn light-blue-btn" to="/icon/index">
-              Icons
-            </router-link>
+            <a class="pan-btn light-blue-btn" href="http://10.100.130.52:8080" target="_blank">
+            <img src="http://gerrit.eswin.cn/static/jira-logo-scaled.png?x-oss-process=image/resize,w_50" alt="">
+              版本构建
+            </a>
           </el-col>
           <el-col :span="8" class="text-center">
-            <router-link class="pan-btn light-blue-btn" to="/icon/index">
-              Icons
-            </router-link>
-          </el-col>
-        </div>
-        <div style="margin-bottom:200px;">
-          <el-col :span="8" class="text-center">
-            <router-link class="pan-btn blue-btn" to="/documentation/index">
-              Documentation
-            </router-link>
-          </el-col>
-          <el-col :span="8" class="text-center">
-            <router-link class="pan-btn light-blue-btn" to="/icon/index">
-              Icons
-            </router-link>
-          </el-col>
-          <el-col :span="8" class="text-center">
-            <router-link class="pan-btn light-blue-btn" to="/icon/index">
-              Icons
-            </router-link>
+            <a class="pan-btn red-btn" href="https://oa.eswin.com" target="_blank">
+            <img src="http://gerrit.eswin.cn/static/jira-logo-scaled.png?x-oss-process=image/resize,w_50" alt="">
+              OA系统
+            </a>
           </el-col>
         </div>
-        <div style="margin-bottom:500px;">
+        <div style="margin-bottom:200px;">
           <el-col :span="8" class="text-center">
-            <router-link class="pan-btn blue-btn" to="/documentation/index">
-              Documentation
-            </router-link>
+            <a class="pan-btn pink-btn" href="http://mail.eswin.com" target="_blank">
+            <img src="http://gerrit.eswin.cn/static/jira-logo-scaled.png?x-oss-process=image/resize,w_50" alt="">
+              邮件系统
+            </a>
           </el-col>
           <el-col :span="8" class="text-center">
-            <router-link class="pan-btn light-blue-btn" to="/icon/index">
-              Icons
-            </router-link>
+            <a class="pan-btn green-btn" href="http://jira.eswin.com" target="_blank">
+            <img src="http://gerrit.eswin.cn/static/jira-logo-scaled.png?x-oss-process=image/resize,w_50" alt="">
+              JIRA系统
+            </a>
           </el-col>
           <el-col :span="8" class="text-center">
-            <router-link class="pan-btn light-blue-btn" to="/icon/index">
-              Icons
-            </router-link>
+            <a class="pan-btn tiffany-btn" href="http://10.12.130.2:8080/source" target="_blank">
+            <img src="http://gerrit.eswin.cn/static/jira-logo-scaled.png?x-oss-process=image/resize,w_50" alt="">
+              代码检索
+            </a>
+          </el-col>
+        </div>
+        <div style="margin-bottom:300px;">
+          <el-col :span="8" class="text-center">
+            <a class="pan-btn yellow-btn" href="http://confluence.eswin.com" target="_blank">
+            <img src="http://gerrit.eswin.cn/static/jira-logo-scaled.png?x-oss-process=image/resize,w_50" alt="">
+              Confluence
+            </a>
+          </el-col>
+          <el-col :span="8" class="text-center">
+            <a class="pan-btn tiffany-btn" href="http://10.12.130.2/source" target="_blank">
+            <img src="http://gerrit.eswin.cn/static/jira-logo-scaled.png?x-oss-process=image/resize,w_50" alt="">
+              文件服务
+            </a>
+          </el-col>
+          <el-col :span="8" class="text-center">
+            <a class="pan-btn green-btn" href="https://10.12.130.2" target="_blank">
+            <img src="http://gerrit.eswin.cn/static/jira-logo-scaled.png?x-oss-process=image/resize,w_50" alt="">
+              云下载
+            </a>
+          </el-col>
+        </div>
+        <div style="margin-bottom:400px;">
+          <el-col :span="8" class="text-center">
+            <a class="pan-btn tiffany-btn" href="http://cri-gitlab.eswin.cn" target="_blank">
+            <img src="http://gerrit.eswin.cn/static/jira-logo-scaled.png?x-oss-process=image/resize,w_50" alt="">
+              个人代码托管
+            </a>
+          </el-col>
+          <el-col :span="8" class="text-center">
+            <a class="pan-btn red-btn" href="http://10.12.130.2:9000/" target="_blank">
+            <img src="http://gerrit.eswin.cn/static/jira-logo-scaled.png?x-oss-process=image/resize,w_50" alt="">
+              测试平台
+            </a>
+          </el-col>
+          <el-col :span="8" class="text-center">
+            <a class="pan-btn light-blue-btn" href="" target="_blank">
+            <img src="http://gerrit.eswin.cn/static/jira-logo-scaled.png?x-oss-process=image/resize,w_50" alt="">
+              其他……
+            </a>
           </el-col>
         </div>
         <div style="margin-bottom:100px;">
-          <el-col :span="4" class="text-center"><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-          </el-col>
-        </div>
-        <div style="margin-bottom:100px;">
-          <el-col :span="4" class="text-center"><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+          <el-col :span="4" class="text-center"><br><br><br><br><br><br><br><br><br><br><br><br>
           </el-col>
         </div>
       </el-card>
@@ -68,20 +93,10 @@
 </template>
 
 <script>
-import PanThumb from '@/components/PanThumb'
-import MdInput from '@/components/MDinput'
-import Mallki from '@/components/TextHoverEffect/Mallki'
-import DropdownMenu from '@/components/Share/DropdownMenu'
 import waves from '@/directive/waves/index.js' // 水波纹指令
 
 export default {
   name: 'ComponentMixinDemo',
-  components: {
-    PanThumb,
-    MdInput,
-    Mallki,
-    DropdownMenu
-  },
   directives: {
     waves
   },
