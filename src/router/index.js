@@ -80,10 +80,10 @@ export const constantRoutes = [{
         }
       },
       {
-        path: 'tree1',
-        name: 'Tree1',
+        path: 'patch',
+        name: 'Patch',
         component: () =>
-          import('@/views/table/index'),
+          import('@/views/patch/index'),
         meta: {
           title: '代码变更历史',
           icon: 'tree'
