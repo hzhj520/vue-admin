@@ -3,32 +3,15 @@
     <el-row>
       <el-card class="box-card">
         <div class="box-container">
-          <a class="link-btn" href="http://gerrit.eswin.cn" target="_black">
-            <img src="https://img.dianzhangzhipin.com/blueapp/header/images/image/20210526/32f674987314258627f953b4fb72f692.jpg?x-oss-process=image/resize,w_200" alt="">
-            <span>代码评审</span>
-          </a>
-          <a class="link-btn" href="http://10.100.130.52:8080" target="_black">
-            <img src="http://gerrit.eswin.cn/static/jira-logo-scaled.png" alt="">
-            <span>版本构建</span>
-          </a>
-          <a class="link-btn" href="https://oa.eswin.com" target="_black">
-            <img src="https://img.dianzhangzhipin.com/blueapp/header/images/image/20210526/32f674987314258627f953b4fb72f692.jpg?x-oss-process=image/resize,w_200" alt="">
-            <span>OA系统</span>
-          </a>
-        </div>
-        <div class="box-container">
-          <a class="link-btn" href="http://mail.eswin.com" target="_black">
-            <img src="https://img.dianzhangzhipin.com/blueapp/header/images/image/20210526/32f674987314258627f953b4fb72f692.jpg?x-oss-process=image/resize,w_200" alt="">
-            <span>邮件系统</span>
-          </a>
-          <a class="link-btn" href="http://jira.eswin.com" target="_black">
-            <img src="https://img.dianzhangzhipin.com/blueapp/header/images/image/20210526/32f674987314258627f953b4fb72f692.jpg?x-oss-process=image/resize,w_200" alt="">
-            <span>JIRA系统</span>
-          </a>
-          <a class="link-btn" href="http://10.12.130.2:8080/source" target="_black">
-            <img src="https://img.dianzhangzhipin.com/blueapp/header/images/image/20210526/32f674987314258627f953b4fb72f692.jpg?x-oss-process=image/resize,w_200" alt="">
-            <span>代码检索</span>
-          </a>
+            <ul>
+                <li v-for="(item, index) in articleList" :key="index">
+                    <a class="link-btn" :href="item.href" target="_black">
+                        <img src="https://img.dianzhangzhipin.com/blueapp/header/images/image/20210526/32f674987314258627f953b4fb72f692.jpg?x-oss-process=image/resize,w_200" alt="">
+                        <span>{{ item.title }}</span>
+                    </a>
+                </li>
+                
+            </ul>
         </div>
       </el-card>
     </el-row>
@@ -60,12 +43,13 @@ export default {
         title: [{ required: true, trigger: 'change', validator: validate }]
       },
       articleList: [
-        { title: '基础篇', href: 'https://juejin.im/post/59097cd7a22b9d0065fb61d2' },
-        { title: '登录权限篇', href: 'https://juejin.im/post/591aa14f570c35006961acac' },
-        { title: '实战篇', href: 'https://juejin.im/post/593121aa0ce4630057f70d35' },
-        { title: 'vue-admin-template 篇', href: 'https://juejin.im/post/595b4d776fb9a06bbe7dba56' },
-        { title: 'v4.0 篇', href: 'https://juejin.im/post/5c92ff94f265da6128275a85' },
-        { title: '优雅的使用 icon', href: 'https://juejin.im/post/59bb864b5188257e7a427c09' }
+        { title: '代码评审', href: 'http://gerrit.eswin.cn' },
+        { title: '版本构建', href: 'http://10.100.130.52:8080' },
+        { title: 'OA系统', href: 'https://oa.eswin.com' },
+        { title: '邮件系统', href: 'http://mail.eswin.com' },
+        { title: 'JIRA系统', href: 'http://jira.eswin.com' },
+        { title: '代码检索', href: 'http://10.12.130.2:8080/source' },
+        { title: '代码检索', href: 'http://10.12.130.2:8080/source' }
       ]
     }
   }
@@ -73,6 +57,9 @@ export default {
 </script>
 
 <style scoped>
+.box-card {
+    padding: 50px 0
+}
 .mixin-components-container {
   background-color: #f0f2f5;
   padding: 30px;
@@ -81,29 +68,32 @@ export default {
 .component-item {
   min-height: 100px;
 }
-.box-container {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+.box-container li{
+    list-style: none;
+    float: left;
+    width: 33%;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-.link-btn {
-  width: 200px;
-  flex: 0 0 30%;
-  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.06);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin: 0 20px 20px 0;
+.box-container li a {
+    padding: 30px;
+    width: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.06);
 }
+
 .link-btn img {
-  width: 100px;
-  line-height: 140px;
+  width: 60px;
+  border-radius: 100%;
+  margin-bottom: 20px;
 }
 .link-btn span {
-  line-height: 140px;
-  height: 140px;
+    font-size: 20px;
 }
 .hidden {
   visibility: hidden;
