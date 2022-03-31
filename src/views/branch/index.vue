@@ -14,27 +14,27 @@
 
       <el-row class="demo-autocomplete">
         <el-col :span="4">
-          Project：
-          <el-autocomplete class="inline-input" v-model="listQuery.project" :fetch-suggestions="queryProjects" placeholder="请输入内容" @select="handleSelect">
+          项目
+          <el-autocomplete class="inline-input" v-model="listQuery.project" :fetch-suggestions="queryProjects" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-col :span="4">
-          Owner:
-          <el-autocomplete class="inline-input" v-model="listQuery.owner" :fetch-suggestions="queryOwners" placeholder="请输入内容" @select="handleSelect">
+          所有者:
+          <el-autocomplete class="inline-input" v-model="listQuery.owner" :fetch-suggestions="queryOwners" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-col :span="4">
-          Depository:
-          <el-autocomplete class="inline-input" v-model="listQuery.depository" :fetch-suggestions="queryDepositorys" placeholder="请输入内容" @select="handleSelect">
+          仓库:
+          <el-autocomplete class="inline-input" v-model="listQuery.repo" :fetch-suggestions="queryRepos" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-col :span="4">
-          Branch:
-          <el-autocomplete class="inline-input" v-model="listQuery.branch" :fetch-suggestions="queryBranchs" placeholder="请输入内容" @select="handleSelect">
+          分支:
+          <el-autocomplete class="inline-input" v-model="listQuery.branch" :fetch-suggestions="queryBranchs" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-          Search
+          查找
         </el-button>
       </el-row>
       <br>
@@ -56,9 +56,9 @@
           <span>{{ scope.row.owner }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Depository" width="410" align="center">
+      <el-table-column label="Repo" width="410" align="center">
         <template slot-scope="scope">
-          {{ scope.row.depository }}
+          {{ scope.row.repo }}
         </template>
       </el-table-column>
       <el-table-column label="Branch" width="310" align="center">
@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import { fetchList, getProjects, getOwners, getDepositorys, getBranchs } from "@/api/branch";
+import { fetchList, getProjects, getOwners, getRepos, getBranchs } from "@/api/branch";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 
 export default {
@@ -104,7 +104,7 @@ export default {
         limit: 10,
         project: undefined,
         owner: undefined,
-        depository: undefined,
+        repo: undefined,
         branch: undefined,
         sort: "+id",
       },
@@ -133,8 +133,8 @@ export default {
       getOwners().then((response) => {
         this.owners = response.data.items;
       });
-      getDepositorys().then((response) => {
-        this.depositorys = response.data.items;
+      getRepos().then((response) => {
+        this.repos = response.data.items;
       });
       getBranchs().then((response) => {
         this.branchs = response.data.items;
@@ -156,9 +156,9 @@ export default {
       // 调用 callback 返回建议列表的数据
       cb(results);
     },
-    queryDepositorys(queryString, cb) {
-      var depositorys = this.depositorys;
-      var results = queryString ? depositorys.filter(this.createFilter(queryString)) : depositorys;
+    queryRepos(queryString, cb) {
+      var repos = this.repos;
+      var results = queryString ? repos.filter(this.createFilter(queryString)) : repos;
       // 调用 callback 返回建议列表的数据
       cb(results);
     },

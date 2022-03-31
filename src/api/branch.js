@@ -23,9 +23,9 @@ export function getOwners() {
   })
 }
 
-export function getDepositorys() {
+export function getRepos() {
   return request({
-    url: '/branch/depositorys',
+    url: '/branch/repos',
     method: 'get',
   })
 }

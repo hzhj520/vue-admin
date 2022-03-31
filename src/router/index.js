@@ -185,7 +185,7 @@ export const constantRoutes = [{
     }]
   },
   {
-    path: '/urls',
+    path: '/url',
     component: Layout,
     children: [{
       path: 'index2',
