@@ -14,13 +14,8 @@
 
       <el-row class="demo-autocomplete">
         <el-col :span="4">
-          项目
+          项目:
           <el-autocomplete class="inline-input" v-model="listQuery.project" :fetch-suggestions="queryProjects" placeholder="请输入内容" @select="handleFilter">
-          </el-autocomplete>
-        </el-col>
-        <el-col :span="4">
-          所有者:
-          <el-autocomplete class="inline-input" v-model="listQuery.owner" :fetch-suggestions="queryOwners" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-col :span="4">
@@ -33,6 +28,11 @@
           <el-autocomplete class="inline-input" v-model="listQuery.branch" :fetch-suggestions="queryBranchs" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
+        <el-col :span="4">
+          项目经理:
+          <el-autocomplete class="inline-input" v-model="listQuery.owner" :fetch-suggestions="queryOwners" placeholder="请输入内容" @select="handleFilter">
+          </el-autocomplete>
+        </el-col>
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
           查找
         </el-button>
@@ -41,29 +41,35 @@
     </div>
 
     <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
-      <el-table-column align="center" label="ID" width="95">
+      <el-table-column align="center" label="序号" width="100">
         <template slot-scope="scope">
           {{ scope.$index + 1 + (listQuery.page - 1) * listQuery.limit }}
         </template>
       </el-table-column>
-      <el-table-column label="Project">
+      <el-table-column label="项目" width="410" align="center">
         <template slot-scope="scope">
-          {{ scope.row.project }}
+          <span class="link-type" @click="handleRouter(scope.row.project, '', '')">
+            {{ scope.row.project }}
+          </span>
         </template>
       </el-table-column>
-      <el-table-column label="Owner" width="210" align="center">
+      <el-table-column label="仓库" align="center">
+        <template slot-scope="scope">
+          <span class="link-type" @click="handleRouter(scope.row.project, scope.row.repo, '')">
+            {{ scope.row.repo }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column label="分支" width="410" align="center">
+        <template slot-scope="scope">
+          <span class="link-type" @click="handleRouter(scope.row.project, '', scope.row.branch)">
+            {{ scope.row.branch }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column label="项目经理" width="310" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.owner }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Repo" width="410" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.repo }}
-        </template>
-      </el-table-column>
-      <el-table-column label="Branch" width="310" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.branch }}
         </template>
       </el-table-column>
     </el-table>
@@ -176,6 +182,18 @@ export default {
     handleSelect(item) {
       console.log(item.value);
     },
+    handleRouter(project, repo, branch) {
+      // this.$router.push({path:'/codemanage/patch'})
+      // 变成 /user?id=2
+      this.$router.push({
+        path: '/codemanage/patch',
+        query: {
+          project: project,
+          repo: repo,
+          branch: branch,
+        }
+      })
+    }
   },
 };
 </script>

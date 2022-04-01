@@ -169,7 +169,20 @@ export const constantRoutes = [{
       },
     ]
   },
-
+  {
+    path: '/dashboard2',
+    component: Layout,
+    children: [{
+      path: 'dashboard2',
+      name: 'Dashboard2',
+      component: () =>
+        import('@/views/dashboard/index.vue'),
+      meta: {
+        title: '工具箱',
+        icon: 'dashboard'
+      }
+    }]
+  },
   {
     path: '/urls',
     component: Layout,
@@ -184,20 +197,20 @@ export const constantRoutes = [{
       }
     }]
   },
-  {
-    path: '/url',
-    component: Layout,
-    children: [{
-      path: 'index2',
-      name: 'URL',
-      component: () =>
-        import('@/views/url/index2'),
-      meta: {
-        title: '常用链接2',
-        icon: 'form'
-      }
-    }]
-  },
+  // {
+  //   path: '/url',
+  //   component: Layout,
+  //   children: [{
+  //     path: 'index2',
+  //     name: 'URL',
+  //     component: () =>
+  //       import('@/views/url/index2'),
+  //     meta: {
+  //       title: '常用链接2',
+  //       icon: 'form'
+  //     }
+  //   }]
+  // },
   // {
   //   path: '/form',
   //   component: Layout,
