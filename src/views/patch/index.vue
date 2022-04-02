@@ -15,33 +15,36 @@
       <el-row class="demo-autocomplete">
         <el-col :span="5">
           补丁描述:
-          <el-autocomplete class="inline-input" v-model="listQuery.subject" :fetch-suggestions="querySubjects" placeholder="请输入内容" @select="handleFilter">
-          </el-autocomplete>
+          <el-input class="common-input" v-model="listQuery.subject" placeholder="请输入内容">
+          </el-input>
           <!-- <el-input class="inline-input" v-model="listQuery.subject" placeholder="请输入内容" >
           </el-input> -->
         </el-col>
         <el-col :span="4">
           项目:
-          <el-autocomplete class="inline-input" v-model="listQuery.project" :fetch-suggestions="queryProjects" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" v-model="listQuery.project" :fetch-suggestions="queryProjects" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-col :span="4">
           仓库:
-          <el-autocomplete class="inline-input" v-model="listQuery.repo" :fetch-suggestions="queryRepos" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" v-model="listQuery.repo" :fetch-suggestions="queryRepos" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-col :span="4">
           分支:
-          <el-autocomplete class="inline-input" v-model="listQuery.branch" :fetch-suggestions="queryBranchs" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" v-model="listQuery.branch" :fetch-suggestions="queryBranchs" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-col :span="4">
           所有者:
-          <el-autocomplete class="inline-input" v-model="listQuery.owner" :fetch-suggestions="queryOwners" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" v-model="listQuery.owner" :fetch-suggestions="queryOwners" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
           查找
+        </el-button>
+        <el-button class="filter-item" type="primary" @click="clearQuery">
+          清除
         </el-button>
       </el-row>
       <br>
@@ -85,7 +88,8 @@
 </template>
 
 <script>
-import { fetchList, getSubjects, getProjects, getOwners, getRepos, getBranchs } from "@/api/patch";
+import { fetchList, getOwners } from "@/api/patch";
+import { getProjects, getRepos, getBranchs } from "@/api/branch";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 
 export default {
@@ -115,6 +119,7 @@ export default {
         page: 1,
         limit: 10,
         subject: undefined,
+        project: undefined,
         owner: undefined,
         repo: undefined,
         branch: undefined,
@@ -125,13 +130,13 @@ export default {
   },
   created() {
     // this.getList();
-    this.getQueryCondition();
+    // this.getQueryCondition();
 
     this.$watch(
       () => this.$route.query,
       // console.log("repo1------------->" + this.$route.params.value),
       () => {
-        this.getList()
+        this.init()
       },
       // 组件创建完后获取数据，
       // 此时 data 已经被 observed 了
@@ -139,7 +144,7 @@ export default {
     )
   },
   methods: {
-    getList() {
+    init() {
       if (this.$route.query.project) this.listQuery.project = this.$route.query.project
       if (this.$route.query.repo) this.listQuery.repo = this.$route.query.repo
       if (this.$route.query.branch) this.listQuery.branch = this.$route.query.branch
@@ -152,10 +157,20 @@ export default {
         // setTimeout(() => { this.listLoading = false; }, 0 * 1000);
       });
     },
-    getQueryCondition() {
-      getSubjects().then((response) => {
-        this.subjects = response.data.items;
+    getList() {
+      this.listLoading = true;
+      fetchList(this.listQuery).then((response) => {
+        this.list = response.data.items;
+        this.total = response.data.total;
+        this.listLoading = false;
+        // Just to simulate the time of the request
+        // setTimeout(() => { this.listLoading = false; }, 0 * 1000);
       });
+    },
+    /*getQueryCondition() {
+      // getSubjects().then((response) => {
+      //   this.subjects = response.data.items;
+      // });
       getProjects().then((response) => {
         this.projects = response.data.items;
       });
@@ -168,40 +183,53 @@ export default {
       getBranchs().then((response) => {
         this.branchs = response.data.items;
       });
-    },
+    },*/
     handleFilter() {
       this.listQuery.page = 1;
       this.getList();
     },
-    querySubjects(queryString, cb) {
-      var subjects = this.subjects;
-      var results = queryString ? subjects.filter(this.createFilter(queryString)) : subjects;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
-    },
     queryProjects(queryString, cb) {
-      var projects = this.projects;
-      var results = queryString ? projects.filter(this.createFilter(queryString)) : projects;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
-    },
-    queryOwners(queryString, cb) {
-      var owners = this.owners;
-      var results = queryString ? owners.filter(this.createFilter(queryString)) : owners;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
+      var projects = [];
+      this.listQuery.project = queryString
+      getProjects(this.listQuery).then((response) => {
+        projects = response.data.items;
+      }).then(() => {
+        var results = queryString ? projects.filter(this.createFilter(queryString)) : projects;
+        cb(results);
+      });
     },
     queryRepos(queryString, cb) {
-      var repos = this.repos;
-      var results = queryString ? repos.filter(this.createFilter(queryString)) : repos;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
+      var repos = [];
+      this.listQuery.repo = queryString
+      getRepos(this.listQuery).then((response) => {
+        repos = response.data.items;
+      }).then(() => {
+        var results = queryString ? repos.filter(this.createFilter(queryString)) : repos;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      })
     },
     queryBranchs(queryString, cb) {
-      var branchs = this.branchs;
-      var results = queryString ? branchs.filter(this.createFilter(queryString)) : branchs;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
+      var branchs = [];
+      this.listQuery.branch = queryString
+      getBranchs(this.listQuery).then((response) => {
+        branchs = response.data.items;
+      }).then(() => {
+        var results = queryString ? branchs.filter(this.createFilter(queryString)) : branchs;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      })
+    },
+    queryOwners(queryString, cb) {
+      var owners = [];
+      this.listQuery.owner = queryString
+      getOwners(this.listQuery).then((response) => {
+        owners = response.data.items;
+      }).then(() => {
+        var results = queryString ? owners.filter(this.createFilter(queryString)) : owners;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      })
     },
     createFilter(queryString) {
       return (restaurant) => {
@@ -210,6 +238,12 @@ export default {
     },
     handleSelect(item) {
       console.log(item.value);
+    },
+    clearQuery(item) {
+      this.listQuery.project = ''
+      this.listQuery.repo = ''
+      this.listQuery.branch = ''
+      this.listQuery.owner = ''
     },
   },
 };

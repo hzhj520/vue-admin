@@ -15,28 +15,28 @@
       <el-row class="demo-autocomplete">
         <el-col :span="4">
           项目:
-          <el-autocomplete class="inline-input" v-model="listQuery.project" :fetch-suggestions="queryProjects" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" v-model="listQuery.project" :fetch-suggestions="queryProjects" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-col :span="4">
           仓库:
-          <el-autocomplete class="inline-input" v-model="listQuery.repo" :fetch-suggestions="queryRepos" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" v-model="listQuery.repo" :fetch-suggestions="queryRepos" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-col :span="4">
           分支:
-          <el-autocomplete class="inline-input" v-model="listQuery.branch" :fetch-suggestions="queryBranchs" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" v-model="listQuery.branch" :fetch-suggestions="queryBranchs" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-col :span="4">
           项目经理:
-          <el-autocomplete class="inline-input" v-model="listQuery.owner" :fetch-suggestions="queryOwners" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" v-model="listQuery.owner" :fetch-suggestions="queryOwners" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <!-- <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
           查找
         </el-button> -->
-        <el-button class="filter-item" type="primary" icon="el-icon-search" @click="clearQuery">
+        <el-button class="filter-item" type="primary" @click="clearQuery">
           清除查询条件
         </el-button>
       </el-row>
@@ -84,6 +84,7 @@
 <script>
 import { fetchList, getProjects, getOwners, getRepos, getBranchs } from "@/api/branch";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
+// import axios from 'axios'
 
 export default {
   name: "Branch",
@@ -107,7 +108,6 @@ export default {
       tableKey: 0,
       list: null,
       total: 0,
-      listLoading: true,
       listQuery: {
         page: 1,
         limit: 10,
@@ -122,7 +122,6 @@ export default {
   },
   created() {
     this.getList();
-    // this.getQueryCondition();
   },
   methods: {
     getList() {
@@ -135,136 +134,73 @@ export default {
         // setTimeout(() => { this.listLoading = false; }, 0 * 1000);
       });
     },
-    getQueryCondition() {
-      getProjects().then((response) => {
-        this.projects = response.data.items;
-      });
-      getOwners().then((response) => {
-        this.owners = response.data.items;
-      });
-      getRepos().then((response) => {
-        this.repos = response.data.items;
-      });
-      getBranchs().then((response) => {
-        this.branchs = response.data.items;
-      });
-    },
     handleFilter() {
       this.listQuery.page = 1;
       this.getList();
     },
-    queryCondition(queryString, name) {
-      console.log("name------------->" + name)
-      switch (name) {
-        case "projects":
-          console.log("projects------------->" + queryString)
-          this.listQuery.project = queryString
-          getProjects(this.listQuery).then((response) => {
-            this.projects = response.data.items;
-          }).then(() => {
-            console.log("projects2------------->" + this.projects)
 
-          });
-          break;
-        case "owners":
-          console.log("owners------------->" + queryString)
-          this.listQuery.owner = queryString
-          getOwners(this.listQuery).then((response) => {
-            this.owners = response.data.items;
-          });
-          break;
-        case "repos":
-          console.log("repos------------->" + queryString)
-          this.listQuery.repo = queryString
-          getRepos(this.listQuery).then((response) => {
-            this.repos = response.data.items;
-          });
-          break;
-        case "branchs":
-          console.log("branchs------------->" + queryString)
-          this.listQuery.branch = queryString
-          getBranchs(this.listQuery).then((response) => {
-            this.branchs = response.data.items;
-          });
-          break;
-      }
-    },
+
+    // async getProject(params) {
+    //   var data = {}
+    //   var res = await axios({
+    //     url: '/dev-api/branch/projects',
+    //     method: 'get',
+    //     params
+    //   })
+    //   data = res.data.data.items
+    //   console.log("方法里：" + data)
+    //   return data
+    // },
     // queryProjects(queryString, cb) {
-    //   this.projects = []
-    //   console.log("projects1------------->" + this.projects)
-    //   this.queryCondition(queryString, "projects")
-    //   var projects = this.projects;
-    //   var results = queryString ? projects.filter(this.createFilter(queryString)) : projects;
-    //   // 调用 callback 返回建议列表的数据
-    //   cb(results);
-    // },
-    // queryRepos(queryString, cb) {
-    //   this.queryCondition(queryString, "repos")
-    //   var repos = this.repos;
-    //   var results = queryString ? repos.filter(this.createFilter(queryString)) : repos;
-    //   // 调用 callback 返回建议列表的数据
-    //   cb(results);
-    // },
-    // queryBranchs(queryString, cb) {
-    //   this.queryCondition(queryString, "branchs")
-    //   var branchs = this.branchs;
-    //   var results = queryString ? branchs.filter(this.createFilter(queryString)) : branchs;
-    //   // 调用 callback 返回建议列表的数据
-    //   cb(results);
-    // },
-    // queryOwners(queryString, cb) {
-    //   this.queryCondition(queryString, "owners")
-    //   var owners = this.owners;
-    //   var results = queryString ? owners.filter(this.createFilter(queryString)) : owners;
-    //   // 调用 callback 返回建议列表的数据
-    //   cb(results);
+    //   // this.projects = []
+    //   // console.log("projects1------------->" + this.projects)
+    //   this.listQuery.project = queryString
+    //   this.getProject(this.listQuery, "projects").then((data) => {
+    //     console.log("方法外：" + data)
+    //     var projects = data;
+    //     var results = queryString ? projects.filter(this.createFilter(queryString)) : projects;
+    //     // 调用 callback 返回建议列表的数据
+    //     cb(results);
+    //   })
     // },
     queryProjects(queryString, cb) {
-      this.projects = []
-      console.log("projects1------------->" + this.projects)
+      var projects = []
       this.listQuery.project = queryString
       getProjects(this.listQuery).then((response) => {
-        this.projects = response.data.items;
+        projects = response.data.items;
       }).then(() => {
-        console.log("projects2------------->" + this.projects)
-        var projects = this.projects;
         var results = queryString ? projects.filter(this.createFilter(queryString)) : projects;
-        // 调用 callback 返回建议列表的数据
         cb(results);
 
       });
-      // this.queryCondition(queryString, "projects")
     },
     queryRepos(queryString, cb) {
-      this.repos = []
+      var repos = []
+      this.listQuery.repo = queryString
       getRepos(this.listQuery).then((response) => {
-        this.repos = response.data.items;
+        repos = response.data.items;
       }).then(() => {
-        var repos = this.repos;
         var results = queryString ? repos.filter(this.createFilter(queryString)) : repos;
-        // 调用 callback 返回建议列表的数据
         cb(results);
       });
     },
     queryBranchs(queryString, cb) {
-      this.branchs = []
+      var branchs = []
+      this.listQuery.branch = queryString
       getBranchs(this.listQuery).then((response) => {
-        this.branchs = response.data.items;
+        branchs = response.data.items;
       }).then(() => {
-        var branchs = this.branchs;
         var results = queryString ? branchs.filter(this.createFilter(queryString)) : branchs;
-        // 调用 callback 返回建议列表的数据
         cb(results);
       });
     },
     queryOwners(queryString, cb) {
-      this.owners = []
+      var owners = []
+      this.listQuery.owner = queryString
       getOwners(this.listQuery).then((response) => {
-        this.owners = response.data.items;
+        owners = response.data.items;
       }).then(() => {
-        var owners = this.owners;
         var results = queryString ? owners.filter(this.createFilter(queryString)) : owners;
-        // 调用 callback 返回建议列表的数据
         cb(results);
       });
     },
