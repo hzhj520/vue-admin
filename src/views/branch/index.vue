@@ -119,7 +119,7 @@ export default {
   },
   created() {
     this.getList();
-    // this.getQueryCondition();
+    this.getQueryCondition();
   },
   methods: {
     getList() {
@@ -132,69 +132,43 @@ export default {
         // setTimeout(() => { this.listLoading = false; }, 0 * 1000);
       });
     },
-    // getQueryCondition() {
-    //   getProjects().then((response) => {
-    //     this.projects = response.data.items;
-    //   });
-    //   getOwners().then((response) => {
-    //     this.owners = response.data.items;
-    //   });
-    //   getRepos().then((response) => {
-    //     this.repos = response.data.items;
-    //   });
-    //   getBranchs().then((response) => {
-    //     this.branchs = response.data.items;
-    //   });
-    // },
+    getQueryCondition() {
+      getProjects().then((response) => {
+        this.projects = response.data.items;
+      });
+      getOwners().then((response) => {
+        this.owners = response.data.items;
+      });
+      getRepos().then((response) => {
+        this.repos = response.data.items;
+      });
+      getBranchs().then((response) => {
+        this.branchs = response.data.items;
+      });
+    },
     handleFilter() {
       this.listQuery.page = 1;
       this.getList();
     },
-    queryCondition(queryString, name) {
-      switch (name) {
-        case "projects":
-          console.log("------------->" + queryString)
-          getProjects(queryString).then((response) => {
-            this.projects = response.data.items;
-          });
-        case "owners":
-          getOwners(queryString).then((response) => {
-            this.owners = response.data.items;
-          });
-        case "repos":
-          getRepos(queryString).then((response) => {
-            this.repos = response.data.items;
-          });
-        case "branchs":
-          getBranchs(queryString).then((response) => {
-            this.branchs = response.data.items;
-          });
-      }
-    },
     queryProjects(queryString, cb) {
-      // console.log("------------->" + queryString)
-      this.queryCondition(queryString, "projects")
       var projects = this.projects;
       var results = queryString ? projects.filter(this.createFilter(queryString)) : projects;
       // 调用 callback 返回建议列表的数据
       cb(results);
     },
     queryOwners(queryString, cb) {
-      this.queryCondition(queryString, "owners")
       var owners = this.owners;
       var results = queryString ? owners.filter(this.createFilter(queryString)) : owners;
       // 调用 callback 返回建议列表的数据
       cb(results);
     },
     queryRepos(queryString, cb) {
-      this.queryCondition(queryString, "repos")
       var repos = this.repos;
       var results = queryString ? repos.filter(this.createFilter(queryString)) : repos;
       // 调用 callback 返回建议列表的数据
       cb(results);
     },
     queryBranchs(queryString, cb) {
-      this.queryCondition(queryString, "branchs")
       var branchs = this.branchs;
       var results = queryString ? branchs.filter(this.createFilter(queryString)) : branchs;
       // 调用 callback 返回建议列表的数据

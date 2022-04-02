@@ -16,13 +16,6 @@ export function getSubjects() {
   })
 }
 
-export function getProjects() {
-  return request({
-    url: '/branch/projects',
-    method: 'get',
-  })
-}
-
 export function getOwners() {
   return request({
     url: '/patch/owners',

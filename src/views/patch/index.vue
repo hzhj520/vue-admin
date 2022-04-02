@@ -13,12 +13,10 @@
       </el-select> -->
 
       <el-row class="demo-autocomplete">
-        <el-col :span="5">
+        <el-col :span="4">
           补丁描述:
           <el-autocomplete class="inline-input" v-model="listQuery.subject" :fetch-suggestions="querySubjects" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
-          <!-- <el-input class="inline-input" v-model="listQuery.subject" placeholder="请输入内容" >
-          </el-input> -->
         </el-col>
         <el-col :span="4">
           项目:
@@ -85,7 +83,7 @@
 </template>
 
 <script>
-import { fetchList, getSubjects, getProjects, getOwners, getRepos, getBranchs } from "@/api/patch";
+import { fetchList, getSubjects, getOwners, getRepos, getBranchs } from "@/api/patch";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 
 export default {
@@ -156,9 +154,6 @@ export default {
       getSubjects().then((response) => {
         this.subjects = response.data.items;
       });
-      getProjects().then((response) => {
-        this.projects = response.data.items;
-      });
       getOwners().then((response) => {
         this.owners = response.data.items;
       });
@@ -176,12 +171,6 @@ export default {
     querySubjects(queryString, cb) {
       var subjects = this.subjects;
       var results = queryString ? subjects.filter(this.createFilter(queryString)) : subjects;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
-    },
-    queryProjects(queryString, cb) {
-      var projects = this.projects;
-      var results = queryString ? projects.filter(this.createFilter(queryString)) : projects;
       // 调用 callback 返回建议列表的数据
       cb(results);
     },
