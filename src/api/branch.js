@@ -9,30 +9,34 @@ export function fetchList(params) {
   })
 }
 
-export function getProjects() {
+export function getProjects(params) {
   return request({
     url: '/branch/projects',
     method: 'get',
+    params
   })
 }
 
-export function getOwners() {
+export function getOwners(params) {
   return request({
     url: '/branch/owners',
     method: 'get',
+    params
   })
 }
 
-export function getRepos() {
+export function getRepos(params) {
   return request({
     url: '/branch/repos',
     method: 'get',
+    params
   })
 }
 
-export function getBranchs() {
+export function getBranchs(params) {
   return request({
     url: '/branch/branchs',
     method: 'get',
+    params
   })
 }

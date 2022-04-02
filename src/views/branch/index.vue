@@ -33,8 +33,11 @@
           <el-autocomplete class="inline-input" v-model="listQuery.owner" :fetch-suggestions="queryOwners" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
-        <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+        <!-- <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
           查找
+        </el-button> -->
+        <el-button class="filter-item" type="primary" icon="el-icon-search" @click="clearQuery">
+          清除查询条件
         </el-button>
       </el-row>
       <br>
@@ -119,7 +122,7 @@ export default {
   },
   created() {
     this.getList();
-    this.getQueryCondition();
+    // this.getQueryCondition();
   },
   methods: {
     getList() {
@@ -150,29 +153,120 @@ export default {
       this.listQuery.page = 1;
       this.getList();
     },
-    queryProjects(queryString, cb) {
-      var projects = this.projects;
-      var results = queryString ? projects.filter(this.createFilter(queryString)) : projects;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
+    queryCondition(queryString, name) {
+      console.log("name------------->" + name)
+      switch (name) {
+        case "projects":
+          console.log("projects------------->" + queryString)
+          this.listQuery.project = queryString
+          getProjects(this.listQuery).then((response) => {
+            this.projects = response.data.items;
+          }).then(() => {
+            console.log("projects2------------->" + this.projects)
+
+          });
+          break;
+        case "owners":
+          console.log("owners------------->" + queryString)
+          this.listQuery.owner = queryString
+          getOwners(this.listQuery).then((response) => {
+            this.owners = response.data.items;
+          });
+          break;
+        case "repos":
+          console.log("repos------------->" + queryString)
+          this.listQuery.repo = queryString
+          getRepos(this.listQuery).then((response) => {
+            this.repos = response.data.items;
+          });
+          break;
+        case "branchs":
+          console.log("branchs------------->" + queryString)
+          this.listQuery.branch = queryString
+          getBranchs(this.listQuery).then((response) => {
+            this.branchs = response.data.items;
+          });
+          break;
+      }
     },
-    queryOwners(queryString, cb) {
-      var owners = this.owners;
-      var results = queryString ? owners.filter(this.createFilter(queryString)) : owners;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
+    // queryProjects(queryString, cb) {
+    //   this.projects = []
+    //   console.log("projects1------------->" + this.projects)
+    //   this.queryCondition(queryString, "projects")
+    //   var projects = this.projects;
+    //   var results = queryString ? projects.filter(this.createFilter(queryString)) : projects;
+    //   // 调用 callback 返回建议列表的数据
+    //   cb(results);
+    // },
+    // queryRepos(queryString, cb) {
+    //   this.queryCondition(queryString, "repos")
+    //   var repos = this.repos;
+    //   var results = queryString ? repos.filter(this.createFilter(queryString)) : repos;
+    //   // 调用 callback 返回建议列表的数据
+    //   cb(results);
+    // },
+    // queryBranchs(queryString, cb) {
+    //   this.queryCondition(queryString, "branchs")
+    //   var branchs = this.branchs;
+    //   var results = queryString ? branchs.filter(this.createFilter(queryString)) : branchs;
+    //   // 调用 callback 返回建议列表的数据
+    //   cb(results);
+    // },
+    // queryOwners(queryString, cb) {
+    //   this.queryCondition(queryString, "owners")
+    //   var owners = this.owners;
+    //   var results = queryString ? owners.filter(this.createFilter(queryString)) : owners;
+    //   // 调用 callback 返回建议列表的数据
+    //   cb(results);
+    // },
+    queryProjects(queryString, cb) {
+      this.projects = []
+      console.log("projects1------------->" + this.projects)
+      this.listQuery.project = queryString
+      getProjects(this.listQuery).then((response) => {
+        this.projects = response.data.items;
+      }).then(() => {
+        console.log("projects2------------->" + this.projects)
+        var projects = this.projects;
+        var results = queryString ? projects.filter(this.createFilter(queryString)) : projects;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+
+      });
+      // this.queryCondition(queryString, "projects")
     },
     queryRepos(queryString, cb) {
-      var repos = this.repos;
-      var results = queryString ? repos.filter(this.createFilter(queryString)) : repos;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
+      this.repos = []
+      getRepos(this.listQuery).then((response) => {
+        this.repos = response.data.items;
+      }).then(() => {
+        var repos = this.repos;
+        var results = queryString ? repos.filter(this.createFilter(queryString)) : repos;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      });
     },
     queryBranchs(queryString, cb) {
-      var branchs = this.branchs;
-      var results = queryString ? branchs.filter(this.createFilter(queryString)) : branchs;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
+      this.branchs = []
+      getBranchs(this.listQuery).then((response) => {
+        this.branchs = response.data.items;
+      }).then(() => {
+        var branchs = this.branchs;
+        var results = queryString ? branchs.filter(this.createFilter(queryString)) : branchs;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      });
+    },
+    queryOwners(queryString, cb) {
+      this.owners = []
+      getOwners(this.listQuery).then((response) => {
+        this.owners = response.data.items;
+      }).then(() => {
+        var owners = this.owners;
+        var results = queryString ? owners.filter(this.createFilter(queryString)) : owners;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      });
     },
     createFilter(queryString) {
       return (restaurant) => {
@@ -181,6 +275,12 @@ export default {
     },
     handleSelect(item) {
       console.log(item.value);
+    },
+    clearQuery(item) {
+      this.listQuery.project = ''
+      this.listQuery.repo = ''
+      this.listQuery.branch = ''
+      this.listQuery.owner = ''
     },
     handleRouter(project, repo, branch) {
       // this.$router.push({path:'/codemanage/patch'})
