@@ -47,11 +47,21 @@
           清除
         </el-button>
       </el-row>
-      <br>
+      <el-checkbox-group v-model="checkboxVal">
+        <el-checkbox label="commit_id">
+          commit_id
+        </el-checkbox>
+        <el-checkbox label="jira_id">
+          jira_id
+        </el-checkbox>
+        <el-checkbox label="message">
+          message
+        </el-checkbox>
+      </el-checkbox-group>
     </div>
 
     <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
-      <el-table-column align="center" label="序号" width="95">
+      <el-table-column align="center" label="序号" width="60">
         <template slot-scope="scope">
           {{ scope.$index + 1 + (listQuery.page - 1) * listQuery.limit }}
         </template>
@@ -63,26 +73,46 @@
           </a>
         </template>
       </el-table-column>
-      <el-table-column label="项目" width="310" align="center">
+      <el-table-column label="项目" width="150" align="center">
         <template slot-scope="scope">
           {{ scope.row.project }}
         </template>
       </el-table-column>
-      <el-table-column label="仓库" width="410" align="center">
+      <el-table-column label="仓库" align="center">
         <template slot-scope="scope">
           {{ scope.row.repo }}
         </template>
       </el-table-column>
-      <el-table-column label="分支" width="310" align="center">
+      <el-table-column label="分支" width="200" align="center">
         <template slot-scope="scope">
           {{ scope.row.branch }}
         </template>
       </el-table-column>
-      <el-table-column label="所有者" width="210" align="center">
+      <el-table-column label="所有者" width="200" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.owner }}</span>
         </template>
       </el-table-column>
+
+      <el-table-column v-for="column in formThead" :key="column" :label="column" align="center">
+
+        <template slot-scope="scope" v-if="column==='message'">
+          <!-- {{column}} -->
+          {{ decode_message(scope.row["message"]) }}
+        </template>
+        <template slot-scope="scope" v-else>
+          <span>{{ scope.row[column] }}</span>
+        </template>
+
+        <!-- <template slot-scope="scope">
+          <span>{{ scope.row[column] }}</span>
+        </template> -->
+      </el-table-column>
+      <!-- <el-table-column label="所有者1" align="center">
+        <template slot-scope="scope">
+          <span>{{ decode_message(scope.row.message) }}</span>
+        </template>
+      </el-table-column> -->
     </el-table>
 
     <pagination v-show="total > 0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
@@ -90,6 +120,8 @@
 </template>
 
 <script>
+const defaultFormThead = ['commit_id']
+let Base64 = require('js-base64').Base64;
 import { fetchList, getOwners } from "@/api/patch";
 import { getProjects, getRepos, getBranchs } from "@/api/branch";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
@@ -128,6 +160,9 @@ export default {
         sort: "+id",
       },
       listTest: null,
+      formTheadOptions: ['commit_id', 'jira_id', 'message'],
+      checkboxVal: defaultFormThead, // checkboxVal
+      formThead: defaultFormThead // 默认表头 Default header
     };
   },
   created() {
@@ -144,6 +179,13 @@ export default {
       // 此时 data 已经被 observed 了
       { immediate: true }
     )
+  },
+  watch: {
+    checkboxVal(valArr) {
+      this.formThead = this.formTheadOptions.filter(i => valArr.indexOf(i) >= 0)
+      this.tableKey = this.tableKey + 1// 为了保证table 每次都会重渲 In order to ensure the table will be re-rendered each time
+      console.log(Base64.decode("bW9kaWZ5IGduJm5pbmphIHBhdGguCgpDaGFuZ2UtSWQ6IEk3NjU2ZDlhZDU5OGQyYTc2ZTA4YTUzNTZlMGNkNmYxOTE0MGMxNTgyCg=="))
+    },
   },
   methods: {
     init() {
@@ -247,6 +289,9 @@ export default {
       this.listQuery.branch = ''
       this.listQuery.owner = ''
     },
+    decode_message(message) {
+      return Base64.decode(message)
+    }
   },
 };
 </script>
