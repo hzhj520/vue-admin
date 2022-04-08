@@ -58,7 +58,9 @@
       </el-table-column>
       <el-table-column label="补丁描述" align="center">
         <template slot-scope="scope">
-          {{ scope.row.subject }}
+          <a class="link-type" :href="scope.row.gerrit_url" target="_blank">
+            {{ scope.row.subject }}
+          </a>
         </template>
       </el-table-column>
       <el-table-column label="项目" width="310" align="center">

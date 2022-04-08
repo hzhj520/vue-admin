@@ -30,7 +30,7 @@
         </el-col>
         <el-col :span="4">
           项目经理:
-          <el-autocomplete :hide-loading=true class="inline-input" v-model="listQuery.owner" :fetch-suggestions="queryOwners" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" v-model="listQuery.project_manager" :fetch-suggestions="queryProjectManagers" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <!-- <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
@@ -72,7 +72,7 @@
       </el-table-column>
       <el-table-column label="项目经理" width="310" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.owner }}</span>
+          <span>{{ scope.row.project_manager }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import { fetchList, getProjects, getOwners, getRepos, getBranchs } from "@/api/branch";
+import { fetchList, getProjects, getProjectManagers, getRepos, getBranchs } from "@/api/branch";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 // import axios from 'axios'
 
@@ -112,7 +112,7 @@ export default {
         page: 1,
         limit: 10,
         project: undefined,
-        owner: undefined,
+        project_manager: undefined,
         repo: undefined,
         branch: undefined,
         sort: "+id",
@@ -194,13 +194,13 @@ export default {
         cb(results);
       });
     },
-    queryOwners(queryString, cb) {
-      var owners = []
-      this.listQuery.owner = queryString
-      getOwners(this.listQuery).then((response) => {
-        owners = response.data.items;
+    queryProjectManagers(queryString, cb) {
+      var project_managers = []
+      this.listQuery.project_manager = queryString
+      getProjectManagers(this.listQuery).then((response) => {
+        project_managers = response.data.items;
       }).then(() => {
-        var results = queryString ? owners.filter(this.createFilter(queryString)) : owners;
+        var results = queryString ? project_managers.filter(this.createFilter(queryString)) : project_managers;
         cb(results);
       });
     },
@@ -216,7 +216,7 @@ export default {
       this.listQuery.project = ''
       this.listQuery.repo = ''
       this.listQuery.branch = ''
-      this.listQuery.owner = ''
+      this.listQuery.project_manager = ''
     },
     handleRouter(project, repo, branch) {
       // this.$router.push({path:'/codemanage/patch'})

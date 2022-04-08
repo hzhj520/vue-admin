@@ -17,9 +17,9 @@ export function getProjects(params) {
   })
 }
 
-export function getOwners(params) {
+export function getProjectManagers(params) {
   return request({
-    url: '/branch/owners',
+    url: '/branch/project_managers',
     method: 'get',
     params
   })
