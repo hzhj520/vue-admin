@@ -92,6 +92,7 @@ export const constantRoutes = [{
       {
         path: 'tree2',
         name: 'Tree2',
+        hidden: true,
         component: () =>
           import('@/views/table/index'),
         meta: {

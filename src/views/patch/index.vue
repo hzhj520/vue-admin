@@ -95,24 +95,16 @@
       </el-table-column>
 
       <el-table-column v-for="column in formThead" :key="column" :label="column" align="center">
-
-        <template slot-scope="scope" v-if="column==='message'">
-          <!-- {{column}} -->
+        <template slot-scope="scope">
+          <span>{{ scope.row[column] }}</span>
+        </template>
+        <!-- <template slot-scope="scope" v-if="column==='message'">
           {{ decode_message(scope.row["message"]) }}
         </template>
         <template slot-scope="scope" v-else>
           <span>{{ scope.row[column] }}</span>
-        </template>
-
-        <!-- <template slot-scope="scope">
-          <span>{{ scope.row[column] }}</span>
         </template> -->
       </el-table-column>
-      <!-- <el-table-column label="所有者1" align="center">
-        <template slot-scope="scope">
-          <span>{{ decode_message(scope.row.message) }}</span>
-        </template>
-      </el-table-column> -->
     </el-table>
 
     <pagination v-show="total > 0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
