@@ -61,9 +61,12 @@
     </div>
 
     <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
-      <el-table-column align="center" label="序号" width="60">
+      <el-table-column align="center" label="gerrit_id" width="80">
         <template slot-scope="scope">
-          {{ scope.$index + 1 + (listQuery.page - 1) * listQuery.limit }}
+          <!-- {{ scope.$index + 1 + (listQuery.page - 1) * listQuery.limit }} -->
+          <a class="link-type" :href="scope.row.gerrit_url" target="_blank">
+            {{ scope.row.gerrit_id }}
+          </a>
         </template>
       </el-table-column>
       <el-table-column label="补丁描述" align="center">
@@ -96,14 +99,13 @@
 
       <el-table-column v-for="column in formThead" :key="column" :label="column" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row[column] }}</span>
+          <div v-if="column==='message'">
+            {{ decode_message(scope.row[column]) }}
+          </div>
+          <div v-else>
+            {{ scope.row[column] }}
+          </div>
         </template>
-        <!-- <template slot-scope="scope" v-if="column==='message'">
-          {{ decode_message(scope.row["message"]) }}
-        </template>
-        <template slot-scope="scope" v-else>
-          <span>{{ scope.row[column] }}</span>
-        </template> -->
       </el-table-column>
     </el-table>
 
@@ -112,7 +114,7 @@
 </template>
 
 <script>
-const defaultFormThead = ['commit_id']
+const defaultFormThead = ['jira_id']
 let Base64 = require('js-base64').Base64;
 import { fetchList, getOwners } from "@/api/patch";
 import { getProjects, getRepos, getBranchs } from "@/api/branch";
