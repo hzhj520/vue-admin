@@ -67,9 +67,14 @@
             {{ decode_message(scope.row[column]) }}
           </span>
           <span v-else-if="column==='jira_id'">
-            <a class="link-type" :href="'http://jira.eswin.com/browse/' + scope.row[column]" target="_blank">
-              {{ null_format(scope.row[column]) }}
-            </a>
+            <span v-if="scope.row[column]===''">
+              N/A
+            </span>
+            <span v-else>
+              <a class="link-type" :href="'http://jira.eswin.com/browse/' + scope.row[column]" target="_blank">
+                {{ scope.row[column] }}
+              </a>
+            </span>
           </span>
           <span v-else>
             {{ scope.row[column] }}
@@ -269,13 +274,6 @@ export default {
     decode_message(message) {
       return Base64.decode(message)
     },
-    null_format(val) {
-      // console.log("val------>", val)
-      if(val===''){
-        return "N/A"
-      }
-      return val
-    }
   },
 };
 </script>
