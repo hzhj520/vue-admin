@@ -1,25 +1,18 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <!-- <el-input v-model="listQuery.subject" placeholder="Subject" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
-        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
-      </el-select>
-      <el-select v-model="listQuery.type" placeholder="Type" clearable class="filter-item" style="width: 130px">
-        <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key" />
-      </el-select>
-      <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
-      </el-select> -->
-
       <el-row class="demo-autocomplete">
         <el-col :span="5">
           补丁描述:
           <el-input class="common-input" v-model="listQuery.subject" placeholder="请输入内容">
           </el-input>
-          <!-- <el-input class="inline-input" v-model="listQuery.subject" placeholder="请输入内容" >
-          </el-input> -->
         </el-col>
+
+        <!-- <el-col :span="4" v-for="(value,condition) in searchCondition" :key="condition">
+          {{value.desc}}:
+          <el-autocomplete :hide-loading=true class="inline-input" v-model="listQuery.condition" :fetch-suggestions="value.queryFun" placeholder="请输入内容" @select="handleFilter">
+          </el-autocomplete>
+        </el-col> -->
         <el-col :span="4">
           项目:
           <el-autocomplete :hide-loading=true class="inline-input" v-model="listQuery.project" :fetch-suggestions="queryProjects" placeholder="请输入内容" @select="handleFilter">
@@ -48,63 +41,39 @@
         </el-button>
       </el-row>
       <el-checkbox-group v-model="checkboxVal">
-        <el-checkbox label="commit_id">
-          commit_id
-        </el-checkbox>
-        <el-checkbox label="jira_id">
-          jira_id
-        </el-checkbox>
-        <el-checkbox label="message">
-          message
+        <el-checkbox v-for="val in formTheadOptions" :label="val" :key="val">
+          {{val}}
         </el-checkbox>
       </el-checkbox-group>
     </div>
 
     <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
-      <el-table-column align="center" label="gerrit_id" width="80">
+      <el-table-column v-for="(val, column) in fixFormTheads" :key="column" :label="val['label']" align="center" :width="val['width']">
         <template slot-scope="scope">
-          <!-- {{ scope.$index + 1 + (listQuery.page - 1) * listQuery.limit }} -->
-          <a class="link-type" :href="scope.row.gerrit_url" target="_blank">
-            {{ scope.row.gerrit_id }}
-          </a>
-        </template>
-      </el-table-column>
-      <el-table-column label="补丁描述" align="center">
-        <template slot-scope="scope">
-          <a class="link-type" :href="scope.row.gerrit_url" target="_blank">
-            {{ scope.row.subject }}
-          </a>
-        </template>
-      </el-table-column>
-      <el-table-column label="项目" width="150" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.project }}
-        </template>
-      </el-table-column>
-      <el-table-column label="仓库" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.repo }}
-        </template>
-      </el-table-column>
-      <el-table-column label="分支" width="200" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.branch }}
-        </template>
-      </el-table-column>
-      <el-table-column label="所有者" width="200" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.owner }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column v-for="column in formThead" :key="column" :label="column" align="center">
-        <template slot-scope="scope">
-          <div v-if="column==='message'">
-            {{ decode_message(scope.row[column]) }}
+          <div v-if="column === 'subject' || column ==='gerrit_id'">
+            <a class="link-type" :href="scope.row.gerrit_url" target="_blank">
+              {{ scope.row[column] }}
+            </a>
           </div>
           <div v-else>
             {{ scope.row[column] }}
           </div>
+        </template>
+      </el-table-column>
+
+      <el-table-column v-for="column in formThead" :key="column" :label="checkForTheads[column]['label']" align="center" :width="checkForTheads[column]['width']">
+        <template slot-scope="scope">
+          <span v-if="column==='message'">
+            {{ decode_message(scope.row[column]) }}
+          </span>
+          <span v-else-if="column==='jira_id'">
+            <a class="link-type" :href="'http://jira.eswin.com/browse/' + scope.row[column]" target="_blank">
+              {{ null_format(scope.row[column]) }}
+            </a>
+          </span>
+          <span v-else>
+            {{ scope.row[column] }}
+          </span>
         </template>
       </el-table-column>
     </el-table>
@@ -115,6 +84,21 @@
 
 <script>
 const defaultFormThead = ['jira_id']
+const formTheadOptions = ['jira_id', 'commit_id', 'message']
+const fixFormTheads = {
+  "gerrit_id": { label: "gerrit_id", width: "80", },
+  "subject": { label: "补丁描述", width: "", },
+  "project": { label: "项目", width: "150", },
+  "repo": { label: "仓库", width: "200", },
+  "branch": { label: "分支", width: "200", },
+  "owner": { label: "所有者", width: "200", }
+}
+const checkForTheads = {
+  "jira_id": { label: "jira_id", width: "150", },
+  "commit_id": { label: "commit_id", width: "", },
+  "message": { label: "message", width: "", },
+}
+
 let Base64 = require('js-base64').Base64;
 import { fetchList, getOwners } from "@/api/patch";
 import { getProjects, getRepos, getBranchs } from "@/api/branch";
@@ -143,18 +127,17 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 10,
-        subject: undefined,
-        project: undefined,
-        owner: undefined,
-        repo: undefined,
-        branch: undefined,
-        sort: "+id",
-      },
-      listTest: null,
-      formTheadOptions: ['commit_id', 'jira_id', 'message'],
+      listQuery: { page: 1, limit: 10, subject: undefined, project: undefined, owner: undefined, repo: undefined, branch: undefined, sort: "+id", },
+      // listTest: null,
+      // searchCondition: {
+      //   "project": { "desc": "项目", "queryFun": this.queryProjects },
+      //   "repo": { "desc": "仓库", "queryFun": this.queryRepos },
+      //   "branch": { "desc": "分支", "queryFun": this.queryBranchs },
+      //   "owner": { "desc": "拥有者", "queryFun": this.queryOwners }
+      // },
+      fixFormTheads: fixFormTheads,
+      checkForTheads: checkForTheads,
+      formTheadOptions: formTheadOptions,
       checkboxVal: defaultFormThead, // checkboxVal
       formThead: defaultFormThead // 默认表头 Default header
     };
@@ -176,9 +159,9 @@ export default {
   },
   watch: {
     checkboxVal(valArr) {
-      this.formThead = this.formTheadOptions.filter(i => valArr.indexOf(i) >= 0)
+      // console.log("valArr------->", valArr)
+      this.formThead = formTheadOptions.filter(i => valArr.indexOf(i) >= 0)
       this.tableKey = this.tableKey + 1// 为了保证table 每次都会重渲 In order to ensure the table will be re-rendered each time
-      console.log(Base64.decode("bW9kaWZ5IGduJm5pbmphIHBhdGguCgpDaGFuZ2UtSWQ6IEk3NjU2ZDlhZDU5OGQyYTc2ZTA4YTUzNTZlMGNkNmYxOTE0MGMxNTgyCg=="))
     },
   },
   methods: {
@@ -277,7 +260,7 @@ export default {
     handleSelect(item) {
       console.log(item.value);
     },
-    clearQuery(item) {
+    clearQuery() {
       this.listQuery.project = ''
       this.listQuery.repo = ''
       this.listQuery.branch = ''
@@ -285,6 +268,13 @@ export default {
     },
     decode_message(message) {
       return Base64.decode(message)
+    },
+    null_format(val) {
+      // console.log("val------>", val)
+      if(val===''){
+        return "N/A"
+      }
+      return val
     }
   },
 };
