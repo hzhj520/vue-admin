@@ -9,37 +9,50 @@ export function fetchList(params) {
   })
 }
 
-// export function getSubjects() {
-//   return request({
-//     url: '/patch/subjects',
-//     method: 'get',
-//   })
-// }
+export function branchDiff(params) {
+  return request({
+    url: '/patch/branch_diff',
+    method: 'get',
+    params
+  })
+}
 
-// export function getProjects() {
-//   return request({
-//     url: '/branch/projects',
-//     method: 'get',
-//   })
-// }
+export function tagDiff(params) {
+  return request({
+    url: '/patch/tag_diff',
+    method: 'get',
+    params
+  })
+}
 
-// export function getRepos() {
-//   return request({
-//     url: '/patch/repos',
-//     method: 'get',
-//   })
-// }
+export function dateDiff(params) {
+  return request({
+    url: '/patch/date_diff',
+    method: 'get',
+    params
+  })
+}
 
-// export function getBranchs() {
-//   return request({
-//     url: '/patch/branchs',
-//     method: 'get',
-//   })
-// }
+
+export function getSubjects() {
+  return request({
+    url: '/patch/subjects',
+    method: 'get',
+  })
+}
+
 
 export function getOwners(params) {
   return request({
     url: '/patch/owners',
+    method: 'get',
+    params
+  })
+}
+
+export function getTags(params) {
+  return request({
+    url: '/patch/tags',
     method: 'get',
     params
   })

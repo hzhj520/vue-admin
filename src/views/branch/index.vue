@@ -15,22 +15,22 @@
       <el-row class="demo-autocomplete">
         <el-col :span="4">
           项目:
-          <el-autocomplete :hide-loading=true class="inline-input" v-model="listQuery.project" :fetch-suggestions="queryProjects" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.project" :fetch-suggestions="queryProjects" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-col :span="4">
           仓库:
-          <el-autocomplete :hide-loading=true class="inline-input" v-model="listQuery.repo" :fetch-suggestions="queryRepos" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.repo" :fetch-suggestions="queryRepos" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-col :span="4">
           分支:
-          <el-autocomplete :hide-loading=true class="inline-input" v-model="listQuery.branch" :fetch-suggestions="queryBranchs" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.branch" :fetch-suggestions="queryBranchs" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-col :span="4">
           项目经理:
-          <el-autocomplete :hide-loading=true class="inline-input" v-model="listQuery.project_manager" :fetch-suggestions="queryProjectManagers" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.project_manager" :fetch-suggestions="queryProjectManagers" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <!-- <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">

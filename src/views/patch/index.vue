@@ -10,27 +10,27 @@
 
         <!-- <el-col :span="4" v-for="(value,condition) in searchCondition" :key="condition">
           {{value.desc}}:
-          <el-autocomplete :hide-loading=true class="inline-input" v-model="listQuery.condition" :fetch-suggestions="value.queryFun" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.condition" :fetch-suggestions="value.queryFun" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col> -->
         <el-col :span="4">
           项目:
-          <el-autocomplete :hide-loading=true class="inline-input" v-model="listQuery.project" :fetch-suggestions="queryProjects" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.project" :fetch-suggestions="queryProjects" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-col :span="4">
           仓库:
-          <el-autocomplete :hide-loading=true class="inline-input" v-model="listQuery.repo" :fetch-suggestions="queryRepos" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.repo" :fetch-suggestions="queryRepos" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-col :span="4">
           分支:
-          <el-autocomplete :hide-loading=true class="inline-input" v-model="listQuery.branch" :fetch-suggestions="queryBranchs" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.branch" :fetch-suggestions="queryBranchs" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-col :span="4">
           所有者:
-          <el-autocomplete :hide-loading=true class="inline-input" v-model="listQuery.owner" :fetch-suggestions="queryOwners" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.owner" :fetch-suggestions="queryOwners" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
@@ -66,6 +66,9 @@
           <span v-if="column==='message'">
             {{ decode_message(scope.row[column]) }}
           </span>
+          <span v-else-if="column==='merge_date'">
+            {{ (scope.row[column]) }}
+          </span>
           <span v-else-if="column==='jira_id'">
             <span v-if="scope.row[column]===''">
               N/A
@@ -89,7 +92,7 @@
 
 <script>
 const defaultFormThead = ['jira_id']
-const formTheadOptions = ['jira_id', 'commit_id', 'message']
+const formTheadOptions = ['jira_id', 'commit_id', 'message', 'merge_date']
 const fixFormTheads = {
   "gerrit_id": { label: "gerrit_id", width: "80", },
   "subject": { label: "补丁描述", width: "", },
@@ -102,6 +105,7 @@ const checkForTheads = {
   "jira_id": { label: "jira_id", width: "150", },
   "commit_id": { label: "commit_id", width: "", },
   "message": { label: "message", width: "", },
+  "merge_date": { label: "merge_date", width: "", },
 }
 
 let Base64 = require('js-base64').Base64;
@@ -273,6 +277,9 @@ export default {
     },
     decode_message(message) {
       return Base64.decode(message)
+    },
+    format_date(merge_date) {
+      return Date(merge_date)
     },
   },
 };

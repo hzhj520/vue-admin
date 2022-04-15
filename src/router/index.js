@@ -101,13 +101,13 @@ export const constantRoutes = [{
         }
       },
       {
-        path: 'tree3',
-        name: 'Tree3',
+        path: 'diff',
+        name: 'Diff',
         component: () =>
-          import('@/views/table/index'),
+          import('@/views/diff/index'),
         meta: {
           title: '代码差分',
-          icon: 'tree'
+          icon: 'table'
         }
       }, {
         path: 'table4',
