@@ -67,7 +67,7 @@
             {{ decode_message(scope.row[column]) }}
           </span>
           <span v-else-if="column==='merge_date'">
-            {{ (scope.row[column]) }}
+            {{ format_date(scope.row[column]) }}
           </span>
           <span v-else-if="column==='jira_id'">
             <span v-if="scope.row[column]===''">
@@ -108,9 +108,9 @@ const checkForTheads = {
   "merge_date": { label: "merge_date", width: "", },
 }
 
-let Base64 = require('js-base64').Base64;
 import { fetchList, getOwners } from "@/api/patch";
 import { getProjects, getRepos, getBranchs } from "@/api/branch";
+import { decode_message, format_date } from "@/utils/util";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 
 export default {
@@ -130,6 +130,8 @@ export default {
   },
   data() {
     return {
+      decode_message: decode_message,
+      format_date: format_date,
       list: null,
       listLoading: true,
       tableKey: 0,
@@ -274,13 +276,7 @@ export default {
       this.listQuery.repo = ''
       this.listQuery.branch = ''
       this.listQuery.owner = ''
-    },
-    decode_message(message) {
-      return Base64.decode(message)
-    },
-    format_date(merge_date) {
-      return Date(merge_date)
-    },
+    }
   },
 };
 </script>

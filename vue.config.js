@@ -13,7 +13,7 @@ const name = defaultSettings.title || 'vue Admin Template' // page title
 // For example, Mac: sudo npm run
 // You can change the port by the following methods:
 // port = 9527 npm run dev OR npm run dev --port = 9527
-const port = process.env.port || process.env.npm_config_port || 9527 // dev port
+const port = process.env.port || process.env.npm_config_port || 7777 // dev port
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -39,7 +39,7 @@ module.exports = {
     proxy: {
       //配置跨域
       '/dev-api': {
-          target: 'http://10.100.96.108:9999/', //这里填写项目真实的后台接口地址
+          target: 'http://127.0.0.1:8888/', //这里填写项目真实的后台接口地址
           changOrigin: true, //设置允许跨域
           pathRewrite: { //这个重写不可省略！因为我们真正请求的地址并不含 /api
               '^/dev-api': ''
