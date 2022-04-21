@@ -1,5 +1,7 @@
 <template>
   <div class="app-container">
+    <div id="app">
+    </div>
     <div class="filter-container">
       <el-row class="demo-autocomplete">
         <el-col :span="4">
@@ -19,18 +21,23 @@
           清除
         </el-button>
       </el-row>
-      <!-- <el-checkbox-group v-model="checkboxVal">
-        <el-checkbox v-for="val in formTheadOptions" :label="val" :key="val">
-          {{val}}
-        </el-checkbox>
-      </el-checkbox-group> -->
     </div>
 
     <el-table v-loading="listLoading" :data="listPage" element-loading-text="Loading" border fit highlight-current-row>
-      <el-table-column v-for="(val, column) in fixFormTheads" :key="column" :label="val['label']" align="center" :width="val['width']">
+      <el-table-column v-for="(val, column) in fixFormTheads" :key="column" :label="val['label']" :align="val['align']" :width="val['width']">
         <template slot-scope="scope">
-          <div v-if="column === 'project' ">
+          <div v-if="column === 'project' || column === 'name'">
             <span class="link-type" @click="openDialog(scope.row)">{{ scope.row[column] }}</span>
+          </div>
+          <div v-else-if="column === 'description'">
+            <template v-if="scope.row['display_desc']  && scope.row[column] != ''">
+              <el-button @click="dockerfile(scope.row)">点击收缩</el-button>
+              <pre v-highlightjs><code class="Dockerfile">{{ scope.row[column] }}</code></pre>
+            </template>
+            <template v-else>
+              <el-button @click="dockerfile(scope.row)">点击展开</el-button>
+            </template>
+            <!-- <pre v-highlightjs><code class="Dockerfile">{{ scope.row[column] }}</code></pre> -->
           </div>
           <div v-else>
             {{ scope.row[column] }}
@@ -65,12 +72,13 @@
 const defaultFormThead = ['jira_id']
 const formTheadOptions = ['jira_id', 'commit_id', 'message', 'merge_date']
 const fixFormTheads = {
-  "id": { label: "id", width: "100", },
-  "project": { label: "所属项目", width: "150", },
-  "name": { label: "镜像名称", width: "250", },
-  "artifact_count": { label: "标签数", width: "150", },
-  "pull_count": { label: "拉取次数", width: "150", },
-  "description": { label: "描述", width: "", },
+  "id": { label: "id", width: "100", align: "center", },
+  "project": { label: "所属项目", width: "", align: "center", },
+  "name": { label: "镜像名称", width: "", align: "center", },
+  "artifact_count": { label: "标签数", width: "130", align: "center", },
+  "pull_count": { label: "下载数", width: "130", align: "center", },
+  "update_time": { label: "最后一次更新时间", width: "250", align: "center", },
+  "description": { label: "描述", width: "130", align: "center", },
 }
 const dialogTheads = {
   "digest": { label: "Digest", width: "600", },
@@ -240,6 +248,24 @@ export default {
         type: 'success',
         duration: 1500
       })
+    },
+    dockerfile(row) {
+      if (row['description'] != 'N/A') {
+        for (var key in this.fixFormTheads) {
+          if (row['display_desc'] === false) {
+            this.fixFormTheads['project']['width'] = '150'
+            this.fixFormTheads['name']['width'] = '150'
+            this.fixFormTheads['description']['width'] = ''
+            this.fixFormTheads['description']['align'] = 'left'
+          } else {
+            this.fixFormTheads['project']['width'] = ''
+            this.fixFormTheads['name']['width'] = ''
+            this.fixFormTheads['description']['width'] = '130'
+            this.fixFormTheads['description']['align'] = 'center'
+          }
+        }
+      }
+      row['display_desc'] = !row['display_desc']
     }
   },
 };

@@ -61,10 +61,10 @@
         </template>
       </el-table-column>
 
-      <el-table-column v-for="column in formThead" :key="column" :label="checkForTheads[column]['label']" align="center" :width="checkForTheads[column]['width']">
+      <el-table-column v-for="column in formThead" :key="column" :label="checkForTheads[column]['label']" :align="column === 'message' ? 'left' : 'center'" :width="checkForTheads[column]['width']">
         <template slot-scope="scope">
           <span v-if="column==='message'">
-            {{ decode_message(scope.row[column]) }}
+            <pre v-highlightjs><code class="Github">{{ decode_message(scope.row[column]) }}</code></pre>
           </span>
           <span v-else-if="column==='merge_date'">
             {{ format_date(scope.row[column]) }}
