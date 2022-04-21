@@ -131,7 +131,7 @@ export const constantRoutes = [{
     ]
   },
   {
-    path: '/example1',
+    path: '/harbar',
     component: Layout,
     redirect: '/example/table',
     name: 'Example',
@@ -140,12 +140,12 @@ export const constantRoutes = [{
       icon: 'el-icon-s-help'
     },
     children: [{
-        path: 'table6',
-        name: 'Table6',
+        path: 'harbor',
+        name: 'Harbor',
         component: () =>
-          import('@/views/table/index'),
+          import('@/views/harbor/index'),
         meta: {
-          title: '环境管理',
+          title: '镜像管理',
           icon: 'table'
         }
       },

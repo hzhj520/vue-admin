@@ -130,7 +130,7 @@
 </template>
 
 <script>
-const defaultFormThead = ['jira_id']
+const defaultFormThead = ['jira_id', 'merge_date']
 const formTheadOptions = ['jira_id', 'commit_id', 'message', 'merge_date']
 const fixFormTheads = {
   "gerrit_id": { label: "gerrit_id", width: "80", },
@@ -147,7 +147,6 @@ const checkForTheads = {
   "merge_date": { label: "merge_date", width: "", },
 }
 
-let Base64 = require('js-base64').Base64;
 import { dateDiff, branchDiff, tagDiff, getTags } from "@/api/patch";
 import { getProjects, getRepos, getBranchs } from "@/api/branch";
 import { decode_message, format_date } from "@/utils/util";
