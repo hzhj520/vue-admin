@@ -15,9 +15,8 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
-import VueHighlightJS from 'vue-highlightjs'
-import 'highlight.js/styles/github.css'
-Vue.use(VueHighlightJS)
+import Prism from "prismjs";
+Prism.highlightAll()
 
 /**
  * If you don't want to use mock-server

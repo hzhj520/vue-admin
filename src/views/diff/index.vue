@@ -103,7 +103,7 @@
       <el-table-column v-for="column in formThead" :key="column" :label="checkForTheads[column]['label']" align="center" :width="checkForTheads[column]['width']">
         <template slot-scope="scope">
           <span v-if="column==='message'">
-            {{ decode_message(scope.row[column]) }}
+            <prism language="git" :plugins="['numbers']" :code="decode_message(scope.row[column])"></prism>
           </span>
           <span v-else-if="column==='merge_date'">
             {{ format_date(scope.row[column]) }}
@@ -151,11 +151,14 @@ import { dateDiff, branchDiff, tagDiff, getTags } from "@/api/patch";
 import { getProjects, getRepos, getBranchs } from "@/api/branch";
 import { decode_message, format_date } from "@/utils/util";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
+import Prism from 'vue-prismjs'
+import 'prismjs/themes/prism.css'
 
 export default {
   name: "Branch",
   components: {
     Pagination,
+    Prism
   },
   filters: {
     statusFilter(status) {

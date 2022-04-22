@@ -33,14 +33,12 @@ export function dateDiff(params) {
   })
 }
 
-
 export function getSubjects() {
   return request({
     url: '/patch/subjects',
     method: 'get',
   })
 }
-
 
 export function getOwners(params) {
   return request({
@@ -53,6 +51,14 @@ export function getOwners(params) {
 export function getTags(params) {
   return request({
     url: '/patch/tags',
+    method: 'get',
+    params
+  })
+}
+
+export function getDiffByCommitID(params) {
+  return request({
+    url: '/patch/diff_content',
     method: 'get',
     params
   })

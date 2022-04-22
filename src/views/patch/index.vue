@@ -7,12 +7,6 @@
           <el-input class="common-input" v-model="listQuery.subject" placeholder="请输入内容">
           </el-input>
         </el-col>
-
-        <!-- <el-col :span="4" v-for="(value,condition) in searchCondition" :key="condition">
-          {{value.desc}}:
-          <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.condition" :fetch-suggestions="value.queryFun" placeholder="请输入内容" @select="handleFilter">
-          </el-autocomplete>
-        </el-col> -->
         <el-col :span="4">
           项目:
           <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.project" :fetch-suggestions="queryProjects" placeholder="请输入内容" @select="handleFilter">
@@ -51,7 +45,7 @@
       <el-table-column v-for="(val, column) in fixFormTheads" :key="column" :label="val['label']" align="center" :width="val['width']">
         <template slot-scope="scope">
           <div v-if="column === 'subject' || column ==='gerrit_id'">
-            <a class="link-type" :href="scope.row.gerrit_url" target="_blank">
+            <a class="link-type" @click="queryDiffContent(scope.row)">
               {{ scope.row[column] }}
             </a>
           </div>
@@ -64,7 +58,7 @@
       <el-table-column v-for="column in formThead" :key="column" :label="checkForTheads[column]['label']" :align="column === 'message' ? 'left' : 'center'" :width="checkForTheads[column]['width']">
         <template slot-scope="scope">
           <span v-if="column==='message'">
-            <pre v-highlightjs><code class="Github">{{ decode_message(scope.row[column]) }}</code></pre>
+            <prism language="git" :plugins="['numbers']" :code="decode_message(scope.row[column])"></prism>
           </span>
           <span v-else-if="column==='merge_date'">
             {{ format_date(scope.row[column]) }}
@@ -87,6 +81,11 @@
     </el-table>
 
     <pagination v-show="total > 0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+
+    <el-dialog :visible.sync="dialogTableVisible" title="Patch 详情" width="60%">
+      <prism language="diff" :plugins="['numbers']" :code="dialogCode"></prism>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -108,15 +107,23 @@ const checkForTheads = {
   "merge_date": { label: "merge_date", width: "", },
 }
 
-import { fetchList, getOwners } from "@/api/patch";
+import { fetchList, getOwners, getDiffByCommitID } from "@/api/patch";
 import { getProjects, getRepos, getBranchs } from "@/api/branch";
 import { decode_message, format_date } from "@/utils/util";
+import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
+
+import Prism from 'vue-prismjs'
+import 'prismjs/themes/prism.css'
 
 export default {
   name: "Branch",
   components: {
     Pagination,
+    Prism
+  },
+  directives: {
+    elDragDialog,
   },
   filters: {
     statusFilter(status) {
@@ -140,17 +147,15 @@ export default {
       listLoading: true,
       listQuery: { page: 1, limit: 10, subject: undefined, project: undefined, owner: undefined, repo: undefined, branch: undefined, sort: "+id", },
       // listTest: null,
-      // searchCondition: {
-      //   "project": { "desc": "项目", "queryFun": this.queryProjects },
-      //   "repo": { "desc": "仓库", "queryFun": this.queryRepos },
-      //   "branch": { "desc": "分支", "queryFun": this.queryBranchs },
-      //   "owner": { "desc": "拥有者", "queryFun": this.queryOwners }
-      // },
       fixFormTheads: fixFormTheads,
       checkForTheads: checkForTheads,
       formTheadOptions: formTheadOptions,
       checkboxVal: defaultFormThead, // checkboxVal
-      formThead: defaultFormThead // 默认表头 Default header
+      formThead: defaultFormThead, // 默认表头 Default header
+
+      dialogTheads: { "code": { label: "code", width: "600", }, },
+      dialogTableVisible: false,
+      dialogCode: '',
     };
   },
   created() {
@@ -199,23 +204,6 @@ export default {
         // setTimeout(() => { this.listLoading = false; }, 0 * 1000);
       });
     },
-    /*getQueryCondition() {
-      // getSubjects().then((response) => {
-      //   this.subjects = response.data.items;
-      // });
-      getProjects().then((response) => {
-        this.projects = response.data.items;
-      });
-      getOwners().then((response) => {
-        this.owners = response.data.items;
-      });
-      getRepos().then((response) => {
-        this.repos = response.data.items;
-      });
-      getBranchs().then((response) => {
-        this.branchs = response.data.items;
-      });
-    },*/
     handleFilter() {
       this.listQuery.page = 1;
       this.getList();
@@ -276,7 +264,16 @@ export default {
       this.listQuery.repo = ''
       this.listQuery.branch = ''
       this.listQuery.owner = ''
-    }
+    },
+    queryDiffContent(row) {
+      var parms = { "repo": row["repo"], "commit_id": row["commit_id"] }
+      getDiffByCommitID(parms).then((response) => {
+        var code = response.data.items
+        this.dialogCode = code
+      }).then(() => {
+        this.dialogTableVisible = true
+      });
+    },
   },
 };
 </script>

@@ -24,6 +24,11 @@
     </div>
 
     <el-table v-loading="listLoading" :data="listPage" element-loading-text="Loading" border fit highlight-current-row>
+      <el-table-column align="center" label="序号" width="100">
+        <template slot-scope="scope">
+          {{ scope.$index + 1 + (listQuery.page - 1) * listQuery.limit }}
+        </template>
+      </el-table-column>
       <el-table-column v-for="(val, column) in fixFormTheads" :key="column" :label="val['label']" :align="val['align']" :width="val['width']">
         <template slot-scope="scope">
           <div v-if="column === 'project' || column === 'name'">
@@ -32,7 +37,8 @@
           <div v-else-if="column === 'description'">
             <template v-if="scope.row['display_desc']  && scope.row[column] != ''">
               <el-button @click="dockerfile(scope.row)">点击收缩</el-button>
-              <pre v-highlightjs><code class="Dockerfile">{{ scope.row[column] }}</code></pre>
+              <prism language="bash" :plugins="['numbers']" :code="scope.row[column]"></prism>
+              <!-- <pre v-highlightjs><code class="Dockerfile">{{ scope.row[column] }}</code></pre> -->
             </template>
             <template v-else>
               <el-button @click="dockerfile(scope.row)">点击展开</el-button>
@@ -72,7 +78,7 @@
 const defaultFormThead = ['jira_id']
 const formTheadOptions = ['jira_id', 'commit_id', 'message', 'merge_date']
 const fixFormTheads = {
-  "id": { label: "id", width: "100", align: "center", },
+  // "id": { label: "id", width: "100", align: "center", },
   "project": { label: "所属项目", width: "", align: "center", },
   "name": { label: "镜像名称", width: "", align: "center", },
   "artifact_count": { label: "标签数", width: "130", align: "center", },
@@ -93,11 +99,14 @@ import Pagination from "@/components/Pagination"; // secondary package based on 
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import clip from '@/utils/clipboard' // use clipboard directly
 import clipboard from '@/directive/clipboard/index.js' // use clipboard by v-directive
+import Prism from 'vue-prismjs'
+import 'prismjs/themes/prism.css'
 
 export default {
   name: "Harbor",
   components: {
     Pagination,
+    Prism
   },
   directives: {
     elDragDialog,
