@@ -150,19 +150,19 @@ export const constantRoutes = [{
         }
       },
       {
-        path: 'tree7',
-        name: 'Tree7',
+        path: 'file',
+        name: 'File',
         component: () =>
-          import('@/views/tree/index'),
+          import('@/views/file/index'),
         meta: {
-          title: '版本检索',
+          title: '软件管理',
           icon: 'tree'
         }
       }, {
-        path: 'table8',
-        name: 'Table8',
+        path: 'download',
+        name: 'Download',
         component: () =>
-          import('@/views/table/index'),
+          import('@/views/download/index'),
         meta: {
           title: '版本变更记录',
           icon: 'table'

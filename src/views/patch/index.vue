@@ -110,6 +110,7 @@ const checkForTheads = {
 import { fetchList, getOwners, getDiffByCommitID } from "@/api/patch";
 import { getProjects, getRepos, getBranchs } from "@/api/branch";
 import { decode_message, format_date } from "@/utils/util";
+import { parseTime } from '@/utils'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 

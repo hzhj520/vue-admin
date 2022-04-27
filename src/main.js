@@ -18,6 +18,8 @@ import '@/permission' // permission control
 import Prism from "prismjs";
 Prism.highlightAll()
 
+import { datePipe } from '@/utils';
+Vue.filter('date', datePipe);
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
