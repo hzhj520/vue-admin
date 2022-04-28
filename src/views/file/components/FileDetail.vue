@@ -32,7 +32,7 @@
   import { getToken } from '@/utils/auth';
   import { ossUploadApi } from '@/api/serviceProvider';
   export default {
-    name: 'Upload',
+    name: 'FileDetail',
     model: {
       prop: 'fileList',
       event: 'change',

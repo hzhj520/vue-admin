@@ -1,33 +1,40 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.title" placeholder="Title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
-        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
-      </el-select>
-      <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
+      <el-col :span="3">
+        <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.title" :fetch-suggestions="queryTitles" placeholder="标题" @select="handleFilter">
+        </el-autocomplete>
+      </el-col>
+      <el-col :span="3">
+        <el-select v-model="listQuery.name" placeholder="Name" clearable class="filter-item" @change="queryVersions">
+          <el-option v-for="item in names" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
+      </el-col>
+      <el-col :span="3">
+        <el-select v-model="listQuery.version" placeholder="Version" clearable class="filter-item">
+          <el-option v-for="item in versions" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
+      </el-col>
+      <!-- <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
-      </el-select>
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        Search
-      </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
-        Add
-      </el-button>
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
+      </el-select> -->
+      <el-col :span="5">
+        <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+          Search
+        </el-button>
+        <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-edit" @click="handleCreate">
+          Add
+        </el-button>
+      </el-col>
+      <!-- <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
         Export
-      </el-button>
+      </el-button> -->
     </div>
 
     <el-table :key="tableKey" v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
       <el-table-column label="序号" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
         <template slot-scope="scope">
           {{ scope.$index + 1 }}
-        </template>
-      </el-table-column>
-      <el-table-column label="Date" width="160px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.upload_date | date('yyyy-MM-dd hh:mm')}}</span>
         </template>
       </el-table-column>
       <el-table-column label="软件名称" width="110px" align="center">
@@ -50,6 +57,11 @@
           <span class="link-type" @click="handleUpdate(row)">{{ row.description }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="Date" width="160px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.created_at | date('yyyy-MM-dd hh:mm')}}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="状态" class-name="status-col" width="100">
         <template slot-scope="{row}">
           <el-tag :type="row.status | statusFilter">
@@ -57,22 +69,22 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="240" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="300" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-          <!-- <el-button type="primary" size="mini" @click="handleUpdate(row)">
+          <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
-          </el-button> -->
+          </el-button>
           <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
             发布
           </el-button>
           <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
-            草稿
+            撤回
           </el-button>
           <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
             删除
           </el-button>
-          <el-button size="mini" type="primary" @click="upload()">
-            上传安装包
+          <el-button size="mini" type="success" @click="upload(row)">
+            上传包
           </el-button>
         </template>
       </el-table-column>
@@ -84,7 +96,11 @@
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="100px" style="width: 700px; margin-left:50px;">
 
         <el-form-item label="软件名称" prop="name">
-          <el-input v-model="temp.name" />
+          <!-- <el-input v-model="temp.name" /> -->
+          <!-- <el-col :span="3"> -->
+          <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="temp.name" :fetch-suggestions="queryNames" placeholder="文件名">
+          </el-autocomplete>
+          <!-- </el-col> -->
         </el-form-item>
         <el-form-item label="标题" prop="title">
           <el-input v-model="temp.title" />
@@ -103,35 +119,32 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
-          Cancel
+          取消
         </el-button>
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          Confirm
+          确认
         </el-button>
       </div>
     </el-dialog>
 
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
-      </span>
+    <el-dialog :visible.sync="dialogUploadVisible" title="上传软件包" width="40%">
+      <Upload @func="uploadFinish" :fileInfo='fileInfo'></Upload>
     </el-dialog>
+
   </div>
 </template>
 
 <script>
-import { fetchList, deleteFileInfo, fetchPv, createFileInfo, updateFileInfo } from '@/api/file'
+import { fetchList, deleteFileInfo, getTitles, getNames, getVersions, createFileInfo, updateFileInfo } from '@/api/file'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import Upload from './components/upload' // secondary package based on el-pagination
+// import FileDetail from './components/FileDetail'
 
 
 export default {
-  name: 'ComplexTable',
-  components: { Pagination },
+  name: 'FileManage',
+  components: { Pagination, Upload,  },
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -155,11 +168,13 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        importance: undefined,
+        name: undefined,
         title: undefined,
-        type: undefined,
+        version: undefined,
         sort: '+id'
       },
+      names: null,
+      versions: null,
       importanceOptions: [1, 2, 3],
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       statusOptions: ['published', 'draft'],
@@ -175,13 +190,12 @@ export default {
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: 'Edit',
-        create: 'Create'
+        update: '编辑',
+        create: '创建'
       },
-      dialogPvVisible: false,
-      pvData: [],
+      dialogUploadVisible: false,
+      fileInfo: null,
       rules: {
-        name: [{ required: true, message: 'name is required', trigger: 'blur' }],
         timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
         title: [{ required: true, message: 'title is required', trigger: 'blur' }],
         version: [{ required: true, message: 'title is required', trigger: 'blur' }]
@@ -195,11 +209,14 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
+      console.log(this.listQuery)
       fetchList(this.listQuery).then(response => {
-        console.log(typeof this.listQuery)
+        // console.log(typeof this.listQuery)
         this.list = response.data.items
         this.total = response.data.total
         this.listLoading = false
+      }).then(() => {
+        this.getNames()
       })
     },
     handleFilter() {
@@ -260,7 +277,7 @@ export default {
               type: 'success',
               duration: 2000
             })
-          }).then(()=>{
+          }).then(() => {
             this.getList()
           })
         }
@@ -308,7 +325,7 @@ export default {
     handleFetchPv(pv) {
       fetchPv(pv).then(response => {
         this.pvData = response.data.pvData
-        this.dialogPvVisible = true
+        this.dialogUploadVisible = true
       })
     },
     handleDownload() {
@@ -338,9 +355,60 @@ export default {
       const sort = this.listQuery.sort
       return sort === `+${key}` ? 'ascending' : 'descending'
     },
-    upload() {
+    upload(fileInfo) {
+      // console.log(fileInfo)
+      this.fileInfo = fileInfo
+      this.dialogUploadVisible = true
+    },
+    uploadFinish() {
+      this.dialogUploadVisible = false
+    },
+    // queryVersions(queryString, cb) {
+    //   var versions = []
+    //   this.listQuery.version = queryString
+    //   getVersions(this.listQuery).then((response) => {
+    //     versions = response.data.items;
+    //   }).then(() => {
+    //     var results = queryString ? versions.filter(this.createFilter(queryString)) : versions;
+    //     cb(results);
 
-    }
+    //   });
+    // },
+    queryVersions() {
+      getVersions(this.listQuery).then((response) => {
+        this.versions = response.data.items;
+      });
+    },
+    queryTitles(queryString, cb) {
+      var titles = []
+      this.listQuery.title = queryString
+      getTitles(this.listQuery).then((response) => {
+        titles = response.data.items;
+      }).then(() => {
+        var results = queryString ? titles.filter(this.createFilter(queryString)) : titles;
+        cb(results);
+      });
+    },
+    getNames() {
+      getNames().then((response) => {
+        this.names = response.data.items;
+      });
+    },
+    queryNames(queryString, cb) {
+      var names = []
+      this.listQuery.name = queryString
+      getNames(this.listQuery).then((response) => {
+        names = response.data.items;
+      }).then(() => {
+        var results = queryString ? names.filter(this.createFilter(queryString)) : names;
+        cb(results);
+      });
+    },
+    createFilter(queryString) {
+      return (restaurant) => {
+        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      };
+    },
   }
 }
 </script>

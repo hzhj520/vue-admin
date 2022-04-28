@@ -32,7 +32,15 @@ export function createFileInfo(params) {
   return request({
     url: '/file/create',
     method: 'get',
-    timeout: 50000, 
+    timeout: 50000,
+    params
+  })
+}
+
+export function getNames(params) {
+  return request({
+    url: '/file/names',
+    method: 'get',
     params
   })
 }
@@ -40,18 +48,17 @@ export function createFileInfo(params) {
 export function getVersions(params) {
   return request({
     url: '/file/versions',
-    // url: '/vue-admin-template/branch/list',
     method: 'get',
     params
   })
 }
 
 
-export function fetchArticle(id) {
+export function getTitles(params) {
   return request({
-    url: '/vue-element-admin/article/detail',
+    url: '/file/titles',
     method: 'get',
-    params: { id }
+    params
   })
 }
 

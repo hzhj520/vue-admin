@@ -1,9 +1,9 @@
 import request from '@/utils/request'
 
-export function upload(params) {
+export function writeFileDetail(params) {
   return request({
-    url: '/file/upload',
-    method: 'post',
+    url: '/file/write_file_detail',
+    method: 'get',
     params
   })
 }
