@@ -1,35 +1,35 @@
 <template>
   <div class="app-container" style="width:70%">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-      <el-form-item label="系统平台" prop="platform">
-        <!-- <el-select v-model="ruleForm.platform" placeholder="请选择系统平台">
+    <el-dialog :visible.sync="dialogUploadVisible" title="上传软件包" width="40%" @open="clearFiles">
+      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="系统平台" prop="platform">
+          <!-- <el-select v-model="ruleForm.platform" placeholder="请选择系统平台">
           <el-option label="Windows" value="shanghai"></el-option>
           <el-option label="CentOS" value="beijing"></el-option>
           <el-option label="Ubuntu" value="beijing"></el-option>
         </el-select> -->
-        <el-radio v-model="radio" label="Windows">Windows</el-radio>
-        <el-radio v-model="radio" label="CentOS">CentOS</el-radio>
-        <el-radio v-model="radio" label="Ubuntu">Ubuntu</el-radio>
-      </el-form-item>
-      <el-form-item v-for="(item,index) in ruleForm.testList" :key=index label="上传安装包" inline="true">
-        <el-row>
-          <el-upload class="upload-demo" drag action="" :http-request="uploadMethod" :limit="1" :on-success="onSuccess" :file-list="fileList" style="align=right">
-            <i class="el-icon-upload"></i>
-            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-            <el-progress style="margin-top: 8px" :percentage="progressPercent" />
-          </el-upload>
-          <!-- <el-upload class="upload-demo" action="" :http-request="uploadMethod" :limit="1" :on-success="onSuccess" :file-list="fileList">
+          <el-radio v-model="radio" label="Windows">Windows</el-radio>
+          <el-radio v-model="radio" label="CentOS">CentOS</el-radio>
+          <el-radio v-model="radio" label="Ubuntu">Ubuntu</el-radio>
+        </el-form-item>
+        <el-form-item v-for="(item,index) in ruleForm.testList" :key=index label="上传安装包" inline="true">
+          <el-row>
+            <el-upload class="upload-demo" drag action="" :http-request="uploadMethod" :limit="1" :on-success="onSuccess" :file-list="fileList" style="align=right" ref="myUpload">
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+              <el-progress style="margin-top: 8px" :percentage="progressPercent" />
+            </el-upload>
+            <!-- <el-upload class="upload-demo" action="" :http-request="uploadMethod" :limit="1" :on-success="onSuccess" :file-list="fileList">
             <el-button size="small" type="primary">上传到服务器</el-button>
             <el-progress style="width: 200px;margin-top: 8px" :percentage="progressPercent" />
           </el-upload> -->
-        </el-row>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="closeDiagle()" align="center">关闭窗口</el-button>
-        <!-- <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button> 
-        <el-button @click="resetForm('ruleForm')">重置</el-button>-->
-      </el-form-item>
-    </el-form>
+          </el-row>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="closeDiagle()" align="center">关闭窗口</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -44,6 +44,10 @@ export default {
     fileInfo: {
       type: Object,
       default: ''
+    },
+    dialogUploadShow: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -56,6 +60,7 @@ export default {
         platform: '',
         testList: [{ "platform": 'Windows', "filepath": "" },]
       },
+      dialogUploadVisible: false,
       rules: {
         name: [
           { required: true, message: '请输入软件标题', trigger: 'blur' },
@@ -64,14 +69,16 @@ export default {
       }
     }
   },
-  created() {
-    console.log("子组件初始化")
+  watch: {
+    dialogUploadShow(newVal) {
+      // console.log("watch方法生效了", newVal)
+      this.dialogUploadVisible = true
+    }
   },
   methods: {
     closeDiagle() {
-      console.log("fileInfo------>", this.fileInfo)
-      //func: 是父组件指定的传数据绑定的函数，this.msg:子组件给父组件传递的数据
-      this.$emit('func')
+      // console.log("fileInfo------>", this.fileInfo)
+      this.dialogUploadVisible = false
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -109,6 +116,8 @@ export default {
       this.forms.append('file', file)
       this.forms.append('name', this.fileInfo.name)
       this.forms.append('version', this.fileInfo.version)
+
+      // console.log("fileInfo.id---------->", this.fileInfo.id)
       // 将图片单独上传，并返回路径
       // 进度条
       const uploadProgressEvent = progressEvent => {
@@ -118,13 +127,16 @@ export default {
       // 调用axios包装后的上传请求方法
       uploadFile(this.forms, uploadProgressEvent).then(res => {
         if (res.code === 20000) {
-          // alert(this.radio, "平台安装包上传成功！")
           var file_path = res.data.items
           var file_detail = { file_id: this.fileInfo.id, platform: this.radio, filepath: file_path }
-          console.log(file_path)
           writeFileDetail(file_detail).then(res => {
-            alert(this.radio + "文件上传成功，将文件信息写入成功！")
-            console.log(res.data.items)
+            // console.log(res.data.items)
+            this.$notify({
+              title: 'Success',
+              message: this.radio + '平台文件上传成功，将文件信息写入成功！',
+              type: 'success',
+              duration: 3000
+            })
           })
           //TODO 调用成功方法
         } else {
@@ -134,6 +146,12 @@ export default {
         console.log('文件上传失败')
       })
     },
+    clearFiles() {
+      // console.log("进入clearFiles方法")
+      setTimeout(() => {
+        this.$refs['myUpload'][0].clearFiles()
+      }, 0)
+    }
   }
 }
 

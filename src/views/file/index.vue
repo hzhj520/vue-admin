@@ -15,9 +15,6 @@
           <el-option v-for="item in versions" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-col>
-      <!-- <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
-      </el-select> -->
       <el-col :span="5">
         <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
           Search
@@ -26,13 +23,10 @@
           Add
         </el-button>
       </el-col>
-      <!-- <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
-        Export
-      </el-button> -->
     </div>
 
-    <el-table :key="tableKey" v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%;" @sort-change="sortChange">
-      <el-table-column label="序号" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
+    <el-table :key="tableKey" v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%;">
+      <el-table-column label="序号" prop="id" sortable="custom" align="center" width="80">
         <template slot-scope="scope">
           {{ scope.$index + 1 }}
         </template>
@@ -49,12 +43,12 @@
       </el-table-column>
       <el-table-column label="标题" min-width="100px" align="center">
         <template slot-scope="{row}">
-          <span class="link-type" @click="handleUpdate(row)">{{ row.title }}</span>
+          <span class="link-type" @click="getFileDetail(row)">{{ row.title }}</span>
         </template>
       </el-table-column>
       <el-table-column label="描述" min-width="200px">
         <template slot-scope="{row}">
-          <span class="link-type" @click="handleUpdate(row)">{{ row.description }}</span>
+          <span class="link-type" @click="getFileDetail(row)">{{ row.description }}</span>
         </template>
       </el-table-column>
       <el-table-column label="Date" width="160px" align="center">
@@ -96,11 +90,8 @@
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="100px" style="width: 700px; margin-left:50px;">
 
         <el-form-item label="软件名称" prop="name">
-          <!-- <el-input v-model="temp.name" /> -->
-          <!-- <el-col :span="3"> -->
           <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="temp.name" :fetch-suggestions="queryNames" placeholder="文件名">
           </el-autocomplete>
-          <!-- </el-col> -->
         </el-form-item>
         <el-form-item label="标题" prop="title">
           <el-input v-model="temp.title" />
@@ -127,25 +118,48 @@
       </div>
     </el-dialog>
 
-    <el-dialog :visible.sync="dialogUploadVisible" title="上传软件包" width="40%">
+    <!-- <el-dialog :visible.sync="dialogUploadVisible" title="上传软件包" width="40%">
       <Upload @func="uploadFinish" :fileInfo='fileInfo'></Upload>
-    </el-dialog>
+    </el-dialog> -->
+
+    <!-- <el-dialog v-el-drag-dialog :visible.sync="dialogFileDetailVisible" title="软件包列表" width="50%">
+      <el-table :data="fileDetailData" border fit highlight-current-row>
+        <el-table-column v-for="(val, column) in dialogTheads" :key="column" :label="val['label']" align="center" :width="val['width']">
+          <template slot-scope="scope">
+            {{ scope.row[column] }}
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog> -->
+
+    <Upload :fileInfo='fileInfo' :dialogUploadShow='dialogUploadShow'></Upload>
+    <FileDetail :fileInfo='fileInfo' :dialogFileDetailShow='dialogFileDetailShow'></FileDetail>
 
   </div>
 </template>
 
 <script>
-import { fetchList, deleteFileInfo, getTitles, getNames, getVersions, createFileInfo, updateFileInfo } from '@/api/file'
+
+// const dialogTheads = {
+//   "file_id": { label: "File_ID", width: "100", },
+//   "filepath": { label: "路径", width: "300", },
+//   "platform": { label: "系统平台", width: "150", },
+//   "created_at": { label: "创建时间", width: "", },
+// }
+
+
+import { fetchList, deleteFileInfo, getTitles, getNames, getVersions, createFileInfo, updateFileInfo, fetchFileDetailList } from '@/api/file'
 import waves from '@/directive/waves' // waves directive
+import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import Upload from './components/upload' // secondary package based on el-pagination
-// import FileDetail from './components/FileDetail'
+import FileDetail from './components/FileDetail'
 
 
 export default {
   name: 'FileManage',
-  components: { Pagination, Upload,  },
-  directives: { waves },
+  components: { Pagination, Upload, FileDetail },
+  directives: { waves, elDragDialog, },
   filters: {
     statusFilter(status) {
       const statusMap = {
@@ -155,9 +169,6 @@ export default {
       }
       return statusMap[status]
     },
-    typeFilter(type) {
-      return calendarTypeKeyValue[type]
-    }
   },
   data() {
     return {
@@ -171,12 +182,9 @@ export default {
         name: undefined,
         title: undefined,
         version: undefined,
-        sort: '+id'
       },
       names: null,
       versions: null,
-      importanceOptions: [1, 2, 3],
-      sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       statusOptions: ['published', 'draft'],
       temp: {
         id: undefined,
@@ -193,14 +201,19 @@ export default {
         update: '编辑',
         create: '创建'
       },
-      dialogUploadVisible: false,
       fileInfo: null,
       rules: {
         timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
         title: [{ required: true, message: 'title is required', trigger: 'blur' }],
         version: [{ required: true, message: 'title is required', trigger: 'blur' }]
       },
-      downloadLoading: false
+      // dialogUploadVisible: false,
+      // fileDetailData: [],
+      // dialogTheads: dialogTheads,
+      // dialogFileDetailVisible: false,
+      dialogUploadShow: false,
+      dialogFileDetailShow: false,
+
     }
   },
   created() {
@@ -209,7 +222,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      console.log(this.listQuery)
+      // console.log(this.listQuery)
       fetchList(this.listQuery).then(response => {
         // console.log(typeof this.listQuery)
         this.list = response.data.items
@@ -229,20 +242,6 @@ export default {
         type: 'success'
       })
       row.status = status
-    },
-    sortChange(data) {
-      const { prop, order } = data
-      if (prop === 'id') {
-        this.sortByID(order)
-      }
-    },
-    sortByID(order) {
-      if (order === 'ascending') {
-        this.listQuery.sort = '+id'
-      } else {
-        this.listQuery.sort = '-id'
-      }
-      this.handleFilter()
     },
     resetTemp() {
       this.temp = {
@@ -296,7 +295,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          console.log(typeof tempData)
+          // console.log(typeof tempData)
           updateFileInfo(tempData).then(() => {
             const index = this.list.findIndex(v => v.id === this.temp.id)
             this.list.splice(index, 1, this.temp)
@@ -322,58 +321,6 @@ export default {
         })
       })
     },
-    handleFetchPv(pv) {
-      fetchPv(pv).then(response => {
-        this.pvData = response.data.pvData
-        this.dialogUploadVisible = true
-      })
-    },
-    handleDownload() {
-      this.downloadLoading = true
-      //   import('@/vendor/Export2Excel').then(excel => {
-      //     const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-      //     const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
-      //     const data = this.formatJson(filterVal)
-      //     excel.export_json_to_excel({
-      //       header: tHeader,
-      //       data,
-      //       filename: 'table-list'
-      //     })
-      //     this.downloadLoading = false
-      //   })
-    },
-    // formatJson(filterVal) {
-    //   return this.list.map(v => filterVal.map(j => {
-    //     if (j === 'timestamp') {
-    //       return parseTime(v[j])
-    //     } else {
-    //       return v[j]
-    //     }
-    //   }))
-    // },
-    getSortClass: function (key) {
-      const sort = this.listQuery.sort
-      return sort === `+${key}` ? 'ascending' : 'descending'
-    },
-    upload(fileInfo) {
-      // console.log(fileInfo)
-      this.fileInfo = fileInfo
-      this.dialogUploadVisible = true
-    },
-    uploadFinish() {
-      this.dialogUploadVisible = false
-    },
-    // queryVersions(queryString, cb) {
-    //   var versions = []
-    //   this.listQuery.version = queryString
-    //   getVersions(this.listQuery).then((response) => {
-    //     versions = response.data.items;
-    //   }).then(() => {
-    //     var results = queryString ? versions.filter(this.createFilter(queryString)) : versions;
-    //     cb(results);
-
-    //   });
-    // },
     queryVersions() {
       getVersions(this.listQuery).then((response) => {
         this.versions = response.data.items;
@@ -390,11 +337,13 @@ export default {
       });
     },
     getNames() {
+      // 获取下拉框的文件名称
       getNames().then((response) => {
         this.names = response.data.items;
       });
     },
     queryNames(queryString, cb) {
+      // 新增文件时，动态输入文件
       var names = []
       this.listQuery.name = queryString
       getNames(this.listQuery).then((response) => {
@@ -409,6 +358,27 @@ export default {
         return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
       };
     },
+    getFileDetailList(fileInfo) {
+      // 在该组件中显示 dialog
+      var param = { file_id: fileInfo.id }
+      fetchFileDetailList(param).then(response => {
+        this.fileDetailData = response.data.items
+        this.dialogFileDetailShow = true
+      })
+    },
+    // 以下为子组件调用方法
+    upload(fileInfo) {
+      this.fileInfo = fileInfo
+      this.dialogUploadShow = !this.dialogUploadShow
+    },
+    uploadFinish() {
+      this.dialogUploadShow = !this.dialogUploadShow
+    },
+    getFileDetail(fileInfo) {
+      this.fileInfo = fileInfo
+      this.dialogFileDetailShow = !this.dialogFileDetailShow
+    },
+
   }
 }
 </script>

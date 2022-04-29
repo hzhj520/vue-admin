@@ -1,133 +1,73 @@
 <template>
-  <el-upload
-    ref="upload"
-    :action="doUpload"
-    :headers="headers"
-    :http-request="ossUpload"
-    :on-preview="handlePictureCardPreview"
-    :on-remove="handleRemove"
-    :on-success="handleSuccess"
-    :on-error="handleError"
-    :before-upload="beforeUpload"
-    :file-list="fileList"
-    :disabled="disable"
-  >
-    <el-button
-      size="small"
-      :disabled="disable"
-      type="primary"
-    >
-      上传文件
-    </el-button>
-    <div
-      slot="tip"
-      class="el-upload__tip"
-    >
-      支持jpg、png、pdf、word格式，大小不超过500M。
-    </div>
-  </el-upload>
+  <div>
+    <el-dialog v-el-drag-dialog :visible.sync="dialogFileDetailVisible" title="软件包列表" width="50%">
+      <el-table :data="gridData" border fit highlight-current-row>
+        <el-table-column v-for="(val, column) in dialogTheads" :key="column" :label="val['label']" align="center" :width="val['width']">
+          <template slot-scope="scope">
+            <div>
+              {{ scope.row[column] }}
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
-  import { getToken } from '@/utils/auth';
-  import { ossUploadApi } from '@/api/serviceProvider';
-  export default {
-    name: 'FileDetail',
-    model: {
-      prop: 'fileList',
-      event: 'change',
+const dialogTheads = {
+  "file_id": { label: "File_ID", width: "100", },
+  "filepath": { label: "路径", width: "300", },
+  "platform": { label: "系统平台", width: "150", },
+  "created_at": { label: "创建时间", width: "", },
+}
+
+import { fetchFileDetailList } from '@/api/file'
+import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
+
+export default {
+  name: 'FileDetail',
+  directives: { elDragDialog, },
+  model: {
+    prop: 'fileList',
+    event: 'change',
+  },
+  props: {
+    fileInfo: {
+      type: Object,
+      default: ''
     },
-    props: {
-      fileList: {
-        type: Array,
-        required: true,
-      },
-      disable: {
-        type: Boolean,
-        default: false,
-      },
+    dialogFileDetailShow: {
+      type: Boolean,
+      default: true
+    }
+  },
+  data() {
+    return {
+      gridData: [],
+      total: 0,
+      dialogTheads: dialogTheads,
+      dialogFileDetailVisible: false,
+    };
+  },
+  watch: {
+    dialogFileDetailShow(newVal) {
+      // console.log("watch方法生效了", newVal)
+      this.getList()
     },
-    data() {
-      return {
-        // 上传地址
-        doUpload:
-          process.env.VUE_APP_BASE_API +
-          (process.env.NODE_ENV === 'production' ? '' : '/api') +
-          process.env.VUE_APP_BASE_CONTENT_URL +
-          '/contract/upload',
-        // doUpload: 'https://jsonplaceholder.typicode.com/posts/',
-        // 下载请求头
-        headers: {
-          tgt: getToken(),
-        },
-      };
+  },
+  methods: {
+    getList() {
+      // console.log("进入子组件获取列表页面")
+      var param = { file_id: this.fileInfo.id }
+      fetchFileDetailList(param).then(response => {
+        // console.log("fileInfo.id---------->", this.fileInfo.id)
+        this.gridData = response.data.items
+        // console.log(this.gridData)
+        this.total = response.data.total
+        this.dialogFileDetailVisible = true
+      })
     },
-    watch: {},
-    methods: {
-      // 处理文件点击预览操作
-      handlePictureCardPreview(file) {
-        console.log(file);
-        let downUrl = '';
-        if (file.hasOwnProperty('url')) {
-          downUrl = file.url;
-        } else {
-          downUrl = file.response.message;
-        }
-        // 赋值
-        const a = document.createElement('a');
-        // 创建href属性
-        a.href = downUrl;
-        // 点击下载
-        a.click();
-      },
-      // 上传前
-      beforeUpload(file) {
-        const limitSize = 500;
-        const isLt500M = file.size / 1024 / 1024 < limitSize;
-        if (!isLt500M) {
-          this.$message.error(`上传文件大小不能超过 ${limitSize}MB!`);
-        }
-        return isLt500M;
-      },
-      // 手动删除文件钩子
-      handleRemove(_file, fileList) {
-        console.log(fileList);
-        this.processFileList(fileList);
-      },
-      // 上传成功钩子
-      handleSuccess(_res, _file, fileList) {
-        console.log(fileList);
-        this.processFileList(fileList);
-      },
-      // 上传失败的钩子
-      handleError(err, _file, fileList) {
-        if (err.code !== 200) {
-          this.$message({
-            message: err.message || '上传失败',
-            type: 'warning',
-          });
-        }
-        this.processFileList(fileList);
-      },
-      // 自定义处理filelist
-      processFileList(fileList) {
-        fileList.forEach((item) => {
-          if (!item.url && item.response) {
-            const response = item.response;
-            item.url = response.url;
-          }
-        });
-        this.triggerChange(fileList);
-      },
-      triggerChange(fileList) {
-        this.$emit('change', fileList);
-      },
-      // 自定义上传oss方法
-      ossUpload(option) {
-        const file = option.file;
-        return ossUploadApi(file);
-      },
-    },
-  };
+  }
+};
 </script>
-<style lang="scss" scoped></style>

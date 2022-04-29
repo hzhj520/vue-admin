@@ -9,6 +9,16 @@ export function fetchList(params) {
   })
 }
 
+export function fetchFileDetailList(params) {
+  // console.log("param------------->", params)
+  return request({
+    url: '/file/file_details',
+    // url: '/vue-admin-template/branch/list',
+    method: 'get',
+    params
+  })
+}
+
 export function updateFileInfo(params) {
   return request({
     url: '/file/update',
