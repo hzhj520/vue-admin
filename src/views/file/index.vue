@@ -6,21 +6,21 @@
         </el-autocomplete>
       </el-col>
       <el-col :span="3">
-        <el-select v-model="listQuery.name" placeholder="Name" clearable class="filter-item" @change="queryVersions">
+        <el-select v-model="listQuery.name" placeholder="软件名称" clearable class="filter-item" @change="queryVersions">
           <el-option v-for="item in names" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-col>
       <el-col :span="3">
-        <el-select v-model="listQuery.version" placeholder="Version" clearable class="filter-item">
+        <el-select v-model="listQuery.version" placeholder="版本号" clearable class="filter-item">
           <el-option v-for="item in versions" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-col>
       <el-col :span="5">
         <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-          Search
+          查询
         </el-button>
         <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-edit" @click="handleCreate">
-          Add
+          新增
         </el-button>
       </el-col>
     </div>
@@ -74,7 +74,7 @@
           <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
             撤回
           </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
+          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="deleteConfirm(row,$index)">
             删除
           </el-button>
           <el-button size="mini" type="success" @click="upload(row)">
@@ -390,6 +390,24 @@ export default {
     getDescFormat(description) {
       this.dialogDescriptionCode = description
       this.dialogDescriptionVisible = true
+    },
+    deleteConfirm(row,$index) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.handleDelete(row,$index)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     }
   }
 }

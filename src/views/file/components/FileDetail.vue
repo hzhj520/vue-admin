@@ -17,9 +17,9 @@
 <script>
 const dialogTheads = {
   "file_id": { label: "File_ID", width: "100", },
-  "filepath": { label: "路径", width: "300", },
-  "platform": { label: "系统平台", width: "150", },
-  "created_at": { label: "创建时间", width: "", },
+  "filepath": { label: "路径", width: "", },
+  "platform": { label: "系统平台", width: "120", },
+  "created_at": { label: "创建时间", width: "250", },
 }
 
 import { fetchFileDetailList } from '@/api/file'
