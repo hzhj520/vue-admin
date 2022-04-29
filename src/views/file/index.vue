@@ -41,29 +41,32 @@
           <span>{{ row.version }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="标题" min-width="100px" align="center">
+      <el-table-column label="标题" min-width="200px" align="center">
         <template slot-scope="{row}">
           <span class="link-type" @click="getFileDetail(row)">{{ row.title }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="描述" min-width="200px">
+      <el-table-column label="描述" min-width="100px" align="center">
         <template slot-scope="{row}">
-          <span class="link-type" @click="getDescFormat(row.description)">{{ row.description }}</span>
+          <!-- <span class="link-type" @click="getDescFormat(row.description)">{{ row.description }}</span> -->
+          <el-button  @click="getDescFormat(row.description)">
+            Release Note
+          </el-button>
         </template>
       </el-table-column>
-      <el-table-column label="Date" width="160px" align="center">
+      <el-table-column label="Date" max-width="160px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.created_at | date('yyyy-MM-dd hh:mm')}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" class-name="status-col" width="100">
+      <el-table-column label="状态" class-name="status-col" width="120">
         <template slot-scope="{row}">
           <el-tag :type="row.status | statusFilter">
             {{ row.status }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="300" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="310" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
