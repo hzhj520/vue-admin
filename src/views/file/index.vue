@@ -48,7 +48,7 @@
       </el-table-column>
       <el-table-column label="描述" min-width="200px">
         <template slot-scope="{row}">
-          <span class="link-type" @click="getFileDetail(row)">{{ row.description }}</span>
+          <span class="link-type" @click="getDescFormat(row.description)">{{ row.description }}</span>
         </template>
       </el-table-column>
       <el-table-column label="Date" width="160px" align="center">
@@ -118,6 +118,10 @@
       </div>
     </el-dialog>
 
+    <el-dialog :visible.sync="dialogDescriptionVisible" title="软件描述详情" width="60%">
+      <prism language="markdown" :plugins="['numbers']" :code="dialogDescriptionCode"></prism>
+    </el-dialog>
+
     <!-- <el-dialog :visible.sync="dialogUploadVisible" title="上传软件包" width="40%">
       <Upload @func="uploadFinish" :fileInfo='fileInfo'></Upload>
     </el-dialog> -->
@@ -132,7 +136,7 @@
       </el-table>
     </el-dialog> -->
 
-    <Upload :fileInfo='fileInfo' :dialogUploadShow='dialogUploadShow'></Upload>
+    <Upload :fileInfo='fileInfo' :dialogUploadShow='dialogUploadShow' @getFileDetail="getFileDetail"></Upload>
     <FileDetail :fileInfo='fileInfo' :dialogFileDetailShow='dialogFileDetailShow'></FileDetail>
 
   </div>
@@ -154,11 +158,13 @@ import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import Upload from './components/upload' // secondary package based on el-pagination
 import FileDetail from './components/FileDetail'
+import Prism from 'vue-prismjs'
+import 'prismjs/themes/prism.css'
 
 
 export default {
   name: 'FileManage',
-  components: { Pagination, Upload, FileDetail },
+  components: { Pagination, Upload, FileDetail, Prism },
   directives: { waves, elDragDialog, },
   filters: {
     statusFilter(status) {
@@ -213,6 +219,9 @@ export default {
       // dialogFileDetailVisible: false,
       dialogUploadShow: false,
       dialogFileDetailShow: false,
+
+      dialogDescriptionVisible: false,
+      dialogDescriptionCode: '',
 
     }
   },
@@ -378,7 +387,10 @@ export default {
       this.fileInfo = fileInfo
       this.dialogFileDetailShow = !this.dialogFileDetailShow
     },
-
+    getDescFormat(description) {
+      this.dialogDescriptionCode = description
+      this.dialogDescriptionVisible = true
+    }
   }
 }
 </script>

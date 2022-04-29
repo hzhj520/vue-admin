@@ -8,9 +8,9 @@
           <el-option label="CentOS" value="beijing"></el-option>
           <el-option label="Ubuntu" value="beijing"></el-option>
         </el-select> -->
-          <el-radio v-model="radio" label="Windows">Windows</el-radio>
-          <el-radio v-model="radio" label="CentOS">CentOS</el-radio>
-          <el-radio v-model="radio" label="Ubuntu">Ubuntu</el-radio>
+          <el-radio v-model="radio" label="Windows" @change="clearFiles">Windows</el-radio>
+          <el-radio v-model="radio" label="CentOS" @change="clearFiles">CentOS</el-radio>
+          <el-radio v-model="radio" label="Ubuntu" @change="clearFiles">Ubuntu</el-radio>
         </el-form-item>
         <el-form-item v-for="(item,index) in ruleForm.testList" :key=index label="上传安装包" inline="true">
           <el-row>
@@ -27,6 +27,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="closeDiagle()" align="center">关闭窗口</el-button>
+          <el-button type="primary" @click="getFileDetail()" align="center">查看文件列表</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -76,6 +77,9 @@ export default {
     }
   },
   methods: {
+    test() {
+      alert("进入了点击事件")
+    },
     closeDiagle() {
       // console.log("fileInfo------>", this.fileInfo)
       this.dialogUploadVisible = false
@@ -150,7 +154,11 @@ export default {
       // console.log("进入clearFiles方法")
       setTimeout(() => {
         this.$refs['myUpload'][0].clearFiles()
+        this.progressPercent = 0
       }, 0)
+    },
+    getFileDetail() {
+      this.$emit('getFileDetail', this.fileInfo) // 调用父组件的fatherFnTwo方法
     }
   }
 }
