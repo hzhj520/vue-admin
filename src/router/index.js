@@ -131,7 +131,7 @@ export const constantRoutes = [{
     ]
   },
   {
-    path: '/harbar',
+    path: '/version',
     component: Layout,
     redirect: '/example/table',
     name: 'Example',
@@ -164,7 +164,7 @@ export const constantRoutes = [{
         component: () =>
           import('@/views/download/index'),
         meta: {
-          title: '版本变更记录',
+          title: '软件下载',
           icon: 'table'
         }
       },

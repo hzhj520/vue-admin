@@ -49,7 +49,7 @@
       <el-table-column label="描述" min-width="100px" align="center">
         <template slot-scope="{row}">
           <!-- <span class="link-type" @click="getDescFormat(row.description)">{{ row.description }}</span> -->
-          <el-button  @click="getDescFormat(row.description)">
+          <el-button size="mini" type="primary" @click="getDescFormat(row.description)">
             Release Note
           </el-button>
         </template>
@@ -155,7 +155,7 @@
 // }
 
 
-import { fetchList, deleteFileInfo, getTitles, getNames, getVersions, createFileInfo, updateFileInfo, fetchFileDetailList } from '@/api/file'
+import { fetchList, deleteFileInfo, getTitles, getNames, getVersionsCheckbox, createFileInfo, updateFileInfo, fetchFileDetailList } from '@/api/file'
 import waves from '@/directive/waves' // waves directive
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -278,8 +278,9 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = 'vue-element-admin'
           createFileInfo(this.temp).then(() => {
+            this.listQuery.name = ''
+            console.log("进入新增后的查询方法")
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$notify({
@@ -289,6 +290,7 @@ export default {
               duration: 2000
             })
           }).then(() => {
+            // this.listQuery.name = ''
             this.getList()
           })
         }
@@ -325,6 +327,7 @@ export default {
     handleDelete(row, index) {
       deleteFileInfo(row).then(() => {
         this.list.splice(index, 1)
+        this.total -= 1
         this.$notify({
           title: 'Success',
           message: 'Delete Successfully',
@@ -334,7 +337,7 @@ export default {
       })
     },
     queryVersions() {
-      getVersions(this.listQuery).then((response) => {
+      getVersionsCheckbox(this.listQuery).then((response) => {
         this.versions = response.data.items;
       });
     },
@@ -394,13 +397,13 @@ export default {
       this.dialogDescriptionCode = description
       this.dialogDescriptionVisible = true
     },
-    deleteConfirm(row,$index) {
+    deleteConfirm(row, $index) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.handleDelete(row,$index)
+        this.handleDelete(row, $index)
         this.$message({
           type: 'success',
           message: '删除成功!'

@@ -3,17 +3,22 @@ import request from '@/utils/request'
 export function fetchList(params) {
   return request({
     url: '/file/lists',
-    // url: '/vue-admin-template/branch/list',
+    method: 'get',
+    params
+  })
+}
+export function fetchSoftList(params) {
+  return request({
+    url: '/file/soft_lists',
     method: 'get',
     params
   })
 }
 
 export function fetchFileDetailList(params) {
-  // console.log("param------------->", params)
+  // 安装包列表
   return request({
     url: '/file/file_details',
-    // url: '/vue-admin-template/branch/list',
     method: 'get',
     params
   })
@@ -23,9 +28,6 @@ export function updateFileInfo(params) {
   return request({
     url: '/file/update',
     method: 'get',
-    // headers: {
-    //   'Content-Type': 'application/x-www-form-urlencoded'
-    // },
     params
   })
 }
@@ -55,6 +57,14 @@ export function getNames(params) {
   })
 }
 
+export function getVersionsCheckbox(params) {
+  return request({
+    url: '/file/versions_checkbox',
+    method: 'get',
+    params
+  })
+}
+
 export function getVersions(params) {
   return request({
     url: '/file/versions',
@@ -62,8 +72,6 @@ export function getVersions(params) {
     params
   })
 }
-
-
 export function getTitles(params) {
   return request({
     url: '/file/titles',
@@ -72,18 +80,20 @@ export function getTitles(params) {
   })
 }
 
-export function fetchPv(pv) {
-  return request({
-    url: '/vue-element-admin/article/pv',
-    method: 'get',
-    params: { pv }
-  })
-}
+// export function download(filepath) {
+//   return request({
+//     url: '/file/download',
+//     method: 'get',
+//     params: { filepath },
+//     // data: filepath,
+//     responseType: 'blob',
+//   })
+// }
 
-export function createArticle(data) {
+export function getFileInfoByVersion(params) {
   return request({
-    url: '/vue-element-admin/article/create',
-    method: 'post',
-    data
+    url: '/file/get_file_by_version',
+    method: 'get',
+    params,
   })
 }
