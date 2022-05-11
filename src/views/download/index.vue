@@ -36,7 +36,7 @@
               </div> -->
               <ul>
                 <li v-for="(v,index) in file.fileDetails" :key="index" class="text item">
-                  <a class="link-type" @click="changePlatform(v)">
+                  <a class="link-type" @click="changePlatformDownload(v)">
                     {{v.platform}}
                   </a>
                 </li>
@@ -178,12 +178,13 @@ export default {
       })
 
     },
+    changePlatformDownload(fileDetail){
+      this.changePlatform(fileDetail)
+      this.handleDownload()
+    },
     changePlatform(fileDetail) {
       console.log(fileDetail)
       this.fileDetail = fileDetail
-      this.handleDownload()
-      // this.platform = fileDetail.platform
-      // this.filepath = fileDetail.filepath
     },
     handleDownload() {
       console.log("@", this.fileDetail.filepath)
