@@ -11,6 +11,7 @@
           <el-radio v-model="radio" label="Windows" @change="clearFiles">Windows</el-radio>
           <el-radio v-model="radio" label="CentOS" @change="clearFiles">CentOS</el-radio>
           <el-radio v-model="radio" label="Ubuntu" @change="clearFiles">Ubuntu</el-radio>
+          <el-radio v-model="radio" label="Manual" @change="clearFiles">用户手册</el-radio>
         </el-form-item>
         <el-form-item v-for="(item,index) in ruleForm.testList" :key=index label="上传安装包" inline="true">
           <el-row>
@@ -54,7 +55,7 @@ export default {
   data() {
     return {
       progressPercent: 0, // 进度条默认为0
-      radio: 'Ubuntu',
+      radio: 'Manual',
       dataObj: { token: '', key: '' },
       fileList: [],
       ruleForm: {

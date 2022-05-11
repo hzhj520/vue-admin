@@ -9,11 +9,14 @@
 
           <el-col :span="17">
             <div>{{fileInfo.version}}</div>
-            <div  style="border:0px solid black;" class="text item" @click="changeFile(file)">
+            <div style="border:0px solid black;" class="text item" @click="changeFile(file)">
               <!-- {{file.description}} -->
               <!-- <prism language="markdown" :plugins="['numbers']" :code="file.description"></prism> -->
               <VueMarkdown :source="file.description"></VueMarkdown>
 
+              <a class="link-type" @click="changePlatformDownload(fileManual)">
+                {{fileManual.platform}}
+              </a>
             </div>
           </el-col>
           <el-col :span="1">
@@ -58,7 +61,7 @@
         </el-card>
         <el-card class="box-card">
           <div slot="header" class="clearfix">
-            <span>下载该文件的其他版本</span>
+            <span>下载该文件的历史版本</span>
           </div>
           <ul>
             <li v-for="(v,index) in listVersions" :key="index" class="text item">
@@ -106,6 +109,7 @@ export default {
       // filepath: '', //当前的下载路径
       fileInfo: {}, //当前选中的文件信息
       fileDetail: {},
+      fileManual: {},
       listQuery: { "name": null },
       downloadLoading: false,
       item: "download",
@@ -138,12 +142,21 @@ export default {
       })
     },
     getFileDetailList(fileInfo) {
-      console.log("@getFileDetailList", fileInfo)
+      // console.log("@getFileDetailList", fileInfo)
       fetchFileDetailList({ file_id: fileInfo.id }).then(response => {
         // this.listFileDetails = response.data.items
         fileInfo.fileDetails = response.data.items
+        this.fileManual = ''
+        this.fileDetail = ''
         if (fileInfo.fileDetails && fileInfo.fileDetails.length > 0) {
-          this.fileDetail = fileInfo.fileDetails[0]
+          fileInfo.fileDetails.map((val, i) => {
+            if (val.platform === 'Manual') {
+              this.fileManual = fileInfo.fileDetails.splice(i, 1)[0]
+              // console.log("@", typeof this.fileManual, this.fileManual)
+            } else {
+              this.fileDetail = fileInfo.fileDetails[i]
+            }
+          })
         }
         this.listLoading = false
       })
@@ -178,16 +191,16 @@ export default {
       })
 
     },
-    changePlatformDownload(fileDetail){
+    changePlatformDownload(fileDetail) {
       this.changePlatform(fileDetail)
       this.handleDownload()
     },
     changePlatform(fileDetail) {
-      console.log(fileDetail)
+      // console.log(fileDetail)
       this.fileDetail = fileDetail
     },
     handleDownload() {
-      console.log("@", this.fileDetail.filepath)
+      // console.log("@", this.fileDetail.filepath)
       if (this.fileDetail) {
         let link = document.createElement('a')
         link.style.display = 'none'
@@ -196,10 +209,12 @@ export default {
       }
     },
     changeFile(fileInfo) {
-      this.fileInfo = fileInfo
-      this.getVersions()
-      if (this.fileInfo.fileDetails && this.fileInfo.fileDetails.length > 0) {
-        this.changePlatform(this.fileInfo.fileDetails[0])
+      if (fileInfo != this.fileInfo) {
+        this.fileInfo = fileInfo
+        this.getVersions()
+        if (this.fileInfo.fileDetails && this.fileInfo.fileDetails.length > 0) {
+          this.changePlatform(this.fileInfo.fileDetails[0])
+        }
       }
       // this.fileDetail=this.fileInfo.fileDetails
     },
@@ -214,6 +229,14 @@ export default {
     },
     handleClipboard(text, event) {
       clipboard(text, event)
+    },
+    platformFilter(fileDetails) {
+      console.log(fileDetails)
+      if (fileDetails) {
+        return fileDetails.filter(item => {
+          return item.platform != 'Manual'
+        })
+      }
     }
   },
   watch: {
