@@ -8,13 +8,32 @@
           </div>
 
           <el-col :span="17">
-            <div class="text item" @click="changeFile(file)">
+            <div>{{fileInfo.version}}</div>
+            <div  style="border:0px solid black;" class="text item" @click="changeFile(file)">
               <!-- {{file.description}} -->
-              <prism language="markdown" :plugins="['numbers']" :code="file.description"></prism>
+              <!-- <prism language="markdown" :plugins="['numbers']" :code="file.description"></prism> -->
+              <VueMarkdown :source="file.description"></VueMarkdown>
+
+            </div>
+          </el-col>
+          <el-col :span="1">
+            <div class="grid">
+              <el-tooltip placement="top">
+                <div slot="content">
+                  {{ generateElementIconCode(item) }}
+                </div>
+                <div class="icon-item">
+                  <i :class="'el-icon-' + item" />
+                </div>
+              </el-tooltip>
             </div>
           </el-col>
           <el-col :span="6">
             <div style="border:0px solid black;" class="text item">
+              <!-- <i class="el-icon-date"></i> -->
+              <!-- <div class="icon-item">
+                <i class="el-icon-download" />
+              </div> -->
               <ul>
                 <li v-for="(v,index) in file.fileDetails" :key="index" class="text item">
                   <a class="link-type" @click="changePlatform(v)">
@@ -26,14 +45,14 @@
           </el-col>
         </el-card>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="5">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
-            <span>请在此处下载您所需要的软件</span><br>
+            <span>当前软件版本： {{fileInfo.name }}-{{fileInfo.version}} </span><br>
           </div>
           <div>
             <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
-              下载 {{fileDetail.platform}}
+              下载 {{fileDetail.platform}} 版本
             </el-button>
           </div>
         </el-card>
@@ -59,10 +78,12 @@ import { getVersions, fetchSoftList, fetchFileDetailList, getFileInfoByVersion }
 import waves from '@/directive/waves' // waves directive
 import Prism from 'vue-prismjs'
 import 'prismjs/themes/prism.css'
+import elementIcons from './element-icons'
+import VueMarkdown from 'vue-markdown'
 
 export default {
   name: 'Download',
-  components: { Prism },
+  components: { Prism, VueMarkdown },
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -86,7 +107,9 @@ export default {
       fileInfo: {}, //当前选中的文件信息
       fileDetail: {},
       listQuery: { "name": null },
-      downloadLoading: false
+      downloadLoading: false,
+      item: "download",
+      elementIcons
     }
   },
   created() {
@@ -149,12 +172,16 @@ export default {
             // }
           }
         }
+      }).then(() => {
+        Window.reload
+        // this.$router.go(0)
       })
 
     },
     changePlatform(fileDetail) {
       console.log(fileDetail)
       this.fileDetail = fileDetail
+      this.handleDownload()
       // this.platform = fileDetail.platform
       // this.filepath = fileDetail.filepath
     },
@@ -177,6 +204,15 @@ export default {
     },
     test() {
       alert("123")
+    },
+    generateIconCode(symbol) {
+      return `<svg-icon icon-class="${symbol}" />`
+    },
+    generateElementIconCode(symbol) {
+      return `<i class="el-icon-${symbol}" />`
+    },
+    handleClipboard(text, event) {
+      clipboard(text, event)
     }
   },
   watch: {
@@ -188,3 +224,37 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.icons-container {
+  margin: 10px 20px 0;
+  overflow: hidden;
+
+  .grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  }
+
+  .icon-item {
+    margin: 20px;
+    height: 85px;
+    text-align: center;
+    width: 100px;
+    float: left;
+    font-size: 30px;
+    color: #24292e;
+    cursor: pointer;
+  }
+
+  span {
+    display: block;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+
+  .disabled {
+    pointer-events: none;
+  }
+}
+</style>
