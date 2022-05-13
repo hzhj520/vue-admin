@@ -13,7 +13,7 @@ export function uploadFile(obj, onUploadProgress) {
   return request({
     url: '/file/upload',
     method: 'POST',
-    timeout: 50000, // request timeout
+    timeout: 5000000, // request timeout
     data: obj,
     headers: {
       'Content-Type': 'multipart/form-data'
