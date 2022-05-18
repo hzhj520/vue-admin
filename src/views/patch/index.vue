@@ -9,22 +9,26 @@
         </el-col>
         <el-col :span="4">
           项目:
-          <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.project" :fetch-suggestions="queryProjects" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.project"
+            :fetch-suggestions="queryProjects" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-col :span="4">
           仓库:
-          <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.repo" :fetch-suggestions="queryRepos" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.repo"
+            :fetch-suggestions="queryRepos" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-col :span="4">
           分支:
-          <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.branch" :fetch-suggestions="queryBranchs" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.branch"
+            :fetch-suggestions="queryBranchs" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-col :span="4">
           所有者:
-          <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.owner" :fetch-suggestions="queryOwners" placeholder="请输入内容" @select="handleFilter">
+          <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.owner"
+            :fetch-suggestions="queryOwners" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
@@ -36,15 +40,16 @@
       </el-row>
       <el-checkbox-group v-model="checkboxVal">
         <el-checkbox v-for="val in formTheadOptions" :label="val" :key="val">
-          {{val}}
+          {{ val }}
         </el-checkbox>
       </el-checkbox-group>
     </div>
 
     <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
-      <el-table-column v-for="(val, column) in fixFormTheads" :key="column" :label="val['label']" align="center" :width="val['width']">
+      <el-table-column v-for="(val, column) in fixFormTheads" :key="column" :label="val['label']" align="center"
+        :width="val['width']">
         <template slot-scope="scope">
-          <div v-if="column === 'subject' || column ==='gerrit_id'">
+          <div v-if="column === 'subject' || column === 'gerrit_id'">
             <a class="link-type" @click="queryDiffContent(scope.row)">
               {{ scope.row[column] }}
             </a>
@@ -55,16 +60,18 @@
         </template>
       </el-table-column>
 
-      <el-table-column v-for="column in formThead" :key="column" :label="checkForTheads[column]['label']" :align="column === 'message' ? 'left' : 'center'" :width="checkForTheads[column]['width']">
+      <el-table-column v-for="column in formThead" :key="column" :label="checkForTheads[column]['label']"
+        :align="column === 'message' ? 'left' : 'center'" :width="checkForTheads[column]['width']">
         <template slot-scope="scope">
-          <span v-if="column==='message'">
+          <span v-if="column === 'message'">
             <prism language="git" :plugins="['numbers']" :code="decode_message(scope.row[column])"></prism>
           </span>
-          <span v-else-if="column==='merge_date'">
-            {{ format_date(scope.row[column]) }}
+          <span v-else-if="column === 'merge_date'">
+            <!-- {{ format_date(scope.row[column]) }} -->
+            {{ scope.row[column] | parseTime('{y}-{m}-{d} {h}:{i}:{s}') }}
           </span>
-          <span v-else-if="column==='jira_id'">
-            <span v-if="scope.row[column]===''">
+          <span v-else-if="column === 'jira_id'">
+            <span v-if="scope.row[column] === ''">
               N/A
             </span>
             <span v-else>
@@ -80,7 +87,8 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total > 0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total > 0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit"
+      @pagination="getList" />
 
     <el-dialog :visible.sync="dialogTableVisible" title="Patch 详情" width="60%">
       <prism language="diff" :plugins="['numbers']" :code="dialogCode"></prism>
@@ -110,7 +118,7 @@ const checkForTheads = {
 import { fetchList, getOwners, getDiffByCommitID } from "@/api/patch";
 import { getProjects, getRepos, getBranchs } from "@/api/branch";
 import { decode_message, format_date } from "@/utils/util";
-import { parseTime } from '@/utils'
+// import { parseTime } from '@/utils'
 import elDragDialog from '@/directive/el-drag-dialog' // base on element-ui
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 

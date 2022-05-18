@@ -4,19 +4,19 @@
       <el-col :span="16">
         <el-card class="box-card" v-for="file in listSofts" :key="file.id" @click="test">
           <div slot="header" class="clearfix" @click="changeFile(file)">
-            <span>{{file.title}}</span>
+            <span>{{ file.title }}</span>
           </div>
 
           <el-col :span="17">
-            <div>{{fileInfo.version}}</div>
+            <div>{{ fileInfo.version }}</div>
             <div style="border:0px solid black;" class="text item" @click="changeFile(file)">
               <!-- {{file.description}} -->
               <!-- <prism language="markdown" :plugins="['numbers']" :code="file.description"></prism> -->
               <VueMarkdown :source="file.description"></VueMarkdown>
 
-              <a class="link-type" @click="changePlatformDownload(fileManual)">
-                {{fileManual.platform}}
-              </a>
+              <!-- <a class="link-type" @click="changePlatformDownload(fileManual)">
+                {{ fileManual.platform }}
+              </a> -->
             </div>
           </el-col>
           <el-col :span="1">
@@ -38,9 +38,9 @@
                 <i class="el-icon-download" />
               </div> -->
               <ul>
-                <li v-for="(v,index) in file.fileDetails" :key="index" class="text item">
+                <li v-for="(v, index) in file.fileDetails" :key="index" class="text item">
                   <a class="link-type" @click="changePlatformDownload(v)">
-                    {{v.platform}}
+                    {{ v.platform }}
                   </a>
                 </li>
               </ul>
@@ -51,6 +51,17 @@
       <el-col :span="5">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
+            <span>当前软件版本： {{ fileInfo.name }}-{{ fileInfo.version }} </span><br>
+          </div>
+          <div>
+            <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download"
+              @click="handleDownload(fileManual)">
+              下载当前版本的用户手册
+            </el-button>
+          </div>
+        </el-card>
+        <!-- <el-card class="box-card">
+          <div slot="header" class="clearfix">
             <span>当前软件版本： {{fileInfo.name }}-{{fileInfo.version}} </span><br>
           </div>
           <div>
@@ -58,15 +69,15 @@
               下载 {{fileDetail.platform}} 版本
             </el-button>
           </div>
-        </el-card>
+        </el-card> -->
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>下载该文件的历史版本</span>
           </div>
           <ul>
-            <li v-for="(v,index) in listVersions" :key="index" class="text item">
+            <li v-for="(v, index) in listVersions" :key="index" class="text item">
               <a class="link-type" @click="changeVersion(v.value)">
-                {{fileInfo.name }}-{{v.value}}
+                {{ fileInfo.name }}-{{ v.value }}
               </a>
             </li>
           </ul>
@@ -199,12 +210,13 @@ export default {
       // console.log(fileDetail)
       this.fileDetail = fileDetail
     },
-    handleDownload() {
+    handleDownload(fileManual) {
       // console.log("@", this.fileDetail.filepath)
-      if (this.fileDetail) {
+      var fileDetail = fileManual ? fileManual : this.fileDetail
+      if (fileDetail) {
         let link = document.createElement('a')
         link.style.display = 'none'
-        link.href = process.env.VUE_APP_BASE_API + '/file/download?filepath=' + this.fileDetail.filepath;
+        link.href = process.env.VUE_APP_BASE_API + '/file/download?filepath=' + fileDetail.filepath;
         link.click();
       }
     },

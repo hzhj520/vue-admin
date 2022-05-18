@@ -97,3 +97,11 @@ export function getFileInfoByVersion(params) {
     params,
   })
 }
+
+export function deleteFileDetail(params) {
+  return request({
+    url: '/file/delete_file_detail',
+    method: 'get',
+    params
+  })
+}
