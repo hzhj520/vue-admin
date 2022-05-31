@@ -84,7 +84,7 @@ export default {
         addRemoveLinks: true,
         headers: { "My-Awesome-Header": "header value" },
         dictDefaultMessage: "拖入需要上传的文件",      //上传框默认显示文字
-        dictMaxFilesExceeded: "您最多只能上传10个文件！",
+        dictMaxFilesExceeded: "您最多只能上传1个文件！",
         dictResponseError: '文件上传失败!',
         dictInvalidFileType: "你不能上传该类型文件,文件类型只能是*.jpg,*.gif,*.png。",
         dictFallbackMessage: "浏览器不受支持",
