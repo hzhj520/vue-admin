@@ -61,8 +61,9 @@ export const constantRoutes = [{
     }
   }]
 },
+]
 
-{
+export const asyncRoutes = [{
   path: '/codemanage',
   component: Layout,
   redirect: '/codemanage/branch',
@@ -129,87 +130,79 @@ export const constantRoutes = [{
       title: '参考代码下载',
       icon: 'table'
     }
+  },]
+},
+{
+  path: '/version',
+  component: Layout,
+  redirect: '/version/download',
+  name: 'Version',
+  meta: {
+    title: '版本管理',
+    icon: 'el-icon-s-help'
+  },
+  children: [{
+    path: 'harbor',
+    name: 'Harbor',
+    component: () =>
+      import('@/views/harbor/index'),
+    meta: {
+      title: '镜像管理',
+      icon: 'table'
+    }
+  },
+  {
+    path: 'file',
+    name: 'File',
+    component: () =>
+      import('@/views/file/index'),
+    meta: {
+      title: '软件管理',
+      icon: 'tree',
+      roles: ['admin']
+    }
+  }, {
+    path: 'download',
+    name: 'Download',
+    component: () =>
+      import('@/views/download/index'),
+    meta: {
+      title: '软件下载',
+      icon: 'table'
+    }
   },
   ]
 },
-// 404 page must be placed at the end !!!
 {
-  path: '*',
-  redirect: '/404',
-  hidden: true
-}
-]
-
-export const asyncRoutes = [
-  {
-    path: '/version',
-    component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
+  path: '/dashboard2',
+  component: Layout,
+  children: [{
+    path: 'dashboard2',
+    name: 'Dashboard2',
+    component: () =>
+      import('@/views/dashboard/index.vue'),
     meta: {
-      title: '版本管理',
-      icon: 'el-icon-s-help'
-    },
-    children: [{
-      path: 'harbor',
-      name: 'Harbor',
-      component: () =>
-        import('@/views/harbor/index'),
-      meta: {
-        title: '镜像管理',
-        icon: 'table'
-      }
-    },
-    {
-      path: 'file',
-      name: 'File',
-      component: () =>
-        import('@/views/file/index'),
-      meta: {
-        title: '软件管理',
-        icon: 'tree',
-        roles: ['admin']
-      }
-    }, {
-      path: 'download',
-      name: 'Download',
-      component: () =>
-        import('@/views/download/index'),
-      meta: {
-        title: '软件下载',
-        icon: 'table'
-      }
-    },
-    ]
-  },
-  {
-    path: '/dashboard2',
-    component: Layout,
-    children: [{
-      path: 'dashboard2',
-      name: 'Dashboard2',
-      component: () =>
-        import('@/views/dashboard/index.vue'),
-      meta: {
-        title: '工具箱',
-        icon: 'dashboard'
-      }
-    }]
-  },
-  {
-    path: '/urls',
-    component: Layout,
-    children: [{
-      path: 'index',
-      name: 'URL',
-      component: () =>
-        import('@/views/url/index'),
-      meta: {
-        title: '常用链接',
-        icon: 'form'
-      }
-    }]
-  },
+      title: '工具箱',
+      icon: 'dashboard'
+    }
+  }]
+},
+{
+  path: '/urls',
+  component: Layout,
+  children: [{
+    path: 'index',
+    name: 'URL',
+    component: () =>
+      import('@/views/url/index'),
+    meta: {
+      title: '常用链接',
+      icon: 'form'
+    }
+  }]
+},
+// 404 page must be placed at the end !!!
+{ path: '*', redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({
