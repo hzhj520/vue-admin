@@ -119,7 +119,8 @@ export const asyncRoutes = [{
       import('@/views/table/index'),
     meta: {
       title: '代码发布记录',
-      icon: 'table'
+      icon: 'table',
+      roles: ['admin']
     }
   }, {
     path: 'table5',
@@ -128,7 +129,8 @@ export const asyncRoutes = [{
       import('@/views/table/index'),
     meta: {
       title: '参考代码下载',
-      icon: 'table'
+      icon: 'table',
+      roles: ['admin']
     }
   },]
 },
@@ -194,7 +196,7 @@ export const asyncRoutes = [{
     path: 'index',
     name: 'URL',
     component: () =>
-      import('@/views/url/index'),
+      import('@/views/url/index2'),
     meta: {
       title: '常用链接',
       icon: 'form'
