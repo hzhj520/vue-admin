@@ -70,7 +70,8 @@ export const asyncRoutes = [{
   name: 'CodeManage',
   meta: {
     title: '代码管理',
-    icon: 'el-icon-s-help'
+    icon: 'el-icon-s-help',
+    roles: ['admin']
   },
   children: [{
     path: 'branch',
@@ -185,7 +186,8 @@ export const asyncRoutes = [{
       import('@/views/dashboard/index.vue'),
     meta: {
       title: '工具箱',
-      icon: 'dashboard'
+      icon: 'dashboard',
+      roles: ['admin']
     }
   }]
 },

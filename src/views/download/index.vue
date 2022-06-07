@@ -135,7 +135,7 @@ export default {
       this.listLoading = true
       // var file_id
       fetchSoftList(this.listQuery).then(response => {
-        this.listLoading = false
+        // this.listLoading = false
         this.listSofts = response.data.items
         this.listSofts.forEach(fileInfo => {
           this.getFileDetailList(fileInfo)
@@ -159,6 +159,7 @@ export default {
         fileInfo.fileDetails = response.data.items
         this.fileManual = ''
         this.fileDetail = ''
+        this.listLoading = true
         if (fileInfo.fileDetails && fileInfo.fileDetails.length > 0) {
           fileInfo.fileDetails.map((val, i) => {
             if (val.platform === 'Manual') {
