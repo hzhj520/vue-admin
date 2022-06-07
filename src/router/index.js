@@ -46,167 +46,170 @@ export const constantRoutes = [{
     import('@/views/404'),
   hidden: true
 },
-{
-  path: '/',
-  component: Layout,
-  redirect: '/dashboard',
-  children: [{
-    path: 'dashboard',
-    name: 'Dashboard',
-    component: () =>
-      import('@/views/dashboard/index.vue'),
-    meta: {
-      title: '研发中心风采',
-      icon: 'dashboard'
-    }
-  }]
-},
 ]
 
-export const asyncRoutes = [{
-  path: '/codemanage',
-  component: Layout,
-  redirect: '/codemanage/branch',
-  name: 'CodeManage',
-  meta: {
-    title: '代码管理',
-    icon: 'el-icon-s-help',
-    roles: ['admin']
-  },
-  children: [{
-    path: 'branch',
-    name: 'Branch',
-    component: () =>
-      import('@/views/branch/index'),
-    meta: {
-      title: '分支管理',
-      icon: 'table'
-    }
+export const asyncRoutes = [
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/version/download',
+    children: [{
+      path: 'dashboard',
+      name: 'Dashboard',
+      component: () =>
+        import('@/views/dashboard/index.vue'),
+      meta: {
+        title: '研发中心风采',
+        icon: 'dashboard',
+        roles: ['admin']
+      }
+    }]
   },
   {
-    path: 'patch',
-    name: 'Patch',
-    component: () =>
-      import('@/views/patch/index'),
+    path: '/codemanage',
+    component: Layout,
+    redirect: '/codemanage/branch',
+    name: 'CodeManage',
     meta: {
-      title: '代码变更历史',
-      icon: 'tree'
-    }
+      title: '代码管理',
+      icon: 'el-icon-s-help',
+      roles: ['admin']
+    },
+    children: [{
+      path: 'branch',
+      name: 'Branch',
+      component: () =>
+        import('@/views/branch/index'),
+      meta: {
+        title: '分支管理',
+        icon: 'table'
+      }
+    },
+    {
+      path: 'patch',
+      name: 'Patch',
+      component: () =>
+        import('@/views/patch/index'),
+      meta: {
+        title: '代码变更历史',
+        icon: 'tree'
+      }
+    },
+    {
+      path: 'tree2',
+      name: 'Tree2',
+      hidden: true,
+      component: () =>
+        import('@/views/table/index'),
+      meta: {
+        title: 'patch检索',
+        icon: 'tree'
+      }
+    },
+    {
+      path: 'diff',
+      name: 'Diff',
+      component: () =>
+        import('@/views/diff/index'),
+      meta: {
+        title: '代码差分',
+        icon: 'table'
+      }
+    }, {
+      path: 'table4',
+      name: 'Table4',
+      component: () =>
+        import('@/views/table/index'),
+      meta: {
+        title: '代码发布记录',
+        icon: 'table',
+        roles: ['admin']
+      }
+    }, {
+      path: 'table5',
+      name: 'Table5',
+      component: () =>
+        import('@/views/table/index'),
+      meta: {
+        title: '参考代码下载',
+        icon: 'table',
+        roles: ['admin']
+      }
+    },]
   },
   {
-    path: 'tree2',
-    name: 'Tree2',
-    hidden: true,
-    component: () =>
-      import('@/views/table/index'),
+    path: '/version',
+    component: Layout,
+    redirect: '/version/download',
+    name: 'Version',
     meta: {
-      title: 'patch检索',
-      icon: 'tree'
-    }
+      title: '版本管理',
+      icon: 'el-icon-s-help'
+    },
+    children: [{
+      path: 'harbor',
+      name: 'Harbor',
+      component: () =>
+        import('@/views/harbor/index'),
+      meta: {
+        title: '镜像管理',
+        icon: 'table',
+        roles: ['admin']
+      }
+    },
+    {
+      path: 'file',
+      name: 'File',
+      component: () =>
+        import('@/views/file/index'),
+      meta: {
+        title: '软件管理',
+        icon: 'tree',
+        roles: ['admin']
+      }
+    }, {
+      path: 'download',
+      name: 'Download',
+      component: () =>
+        import('@/views/download/index'),
+      meta: {
+        title: '软件下载',
+        icon: 'table'
+      }
+    },
+    ]
   },
   {
-    path: 'diff',
-    name: 'Diff',
-    component: () =>
-      import('@/views/diff/index'),
-    meta: {
-      title: '代码差分',
-      icon: 'table'
-    }
-  }, {
-    path: 'table4',
-    name: 'Table4',
-    component: () =>
-      import('@/views/table/index'),
-    meta: {
-      title: '代码发布记录',
-      icon: 'table',
-      roles: ['admin']
-    }
-  }, {
-    path: 'table5',
-    name: 'Table5',
-    component: () =>
-      import('@/views/table/index'),
-    meta: {
-      title: '参考代码下载',
-      icon: 'table',
-      roles: ['admin']
-    }
-  },]
-},
-{
-  path: '/version',
-  component: Layout,
-  redirect: '/version/download',
-  name: 'Version',
-  meta: {
-    title: '版本管理',
-    icon: 'el-icon-s-help'
-  },
-  children: [{
-    path: 'harbor',
-    name: 'Harbor',
-    component: () =>
-      import('@/views/harbor/index'),
-    meta: {
-      title: '镜像管理',
-      icon: 'table'
-    }
+    path: '/dashboard2',
+    component: Layout,
+    children: [{
+      path: 'dashboard2',
+      name: 'Dashboard2',
+      component: () =>
+        import('@/views/dashboard/index.vue'),
+      meta: {
+        title: '工具箱',
+        icon: 'dashboard',
+        roles: ['admin']
+      }
+    }]
   },
   {
-    path: 'file',
-    name: 'File',
-    component: () =>
-      import('@/views/file/index'),
-    meta: {
-      title: '软件管理',
-      icon: 'tree',
-      roles: ['admin']
-    }
-  }, {
-    path: 'download',
-    name: 'Download',
-    component: () =>
-      import('@/views/download/index'),
-    meta: {
-      title: '软件下载',
-      icon: 'table'
-    }
+    path: '/urls',
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'URL',
+      component: () =>
+        import('@/views/url/index'),
+      meta: {
+        title: '常用链接',
+        icon: 'form'
+      }
+    }]
   },
-  ]
-},
-{
-  path: '/dashboard2',
-  component: Layout,
-  children: [{
-    path: 'dashboard2',
-    name: 'Dashboard2',
-    component: () =>
-      import('@/views/dashboard/index.vue'),
-    meta: {
-      title: '工具箱',
-      icon: 'dashboard',
-      roles: ['admin']
-    }
-  }]
-},
-{
-  path: '/urls',
-  component: Layout,
-  children: [{
-    path: 'index',
-    name: 'URL',
-    component: () =>
-      import('@/views/url/index'),
-    meta: {
-      title: '常用链接',
-      icon: 'form'
-    }
-  }]
-},
-// 404 page must be placed at the end !!!
-{ path: '*', redirect: '/404', hidden: true }
+  // 404 page must be placed at the end !!!
+  { path: '*', redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({

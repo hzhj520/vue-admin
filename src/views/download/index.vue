@@ -1,14 +1,14 @@
 <template>
   <div class="app-container" v-loading="listLoading">
     <el-row :gutter="30">
-      <el-col :span="16">
+      <el-col :span="18">
         <el-card class="box-card" v-for="file in listSofts" :key="file.id" @click="test">
-          <div slot="header" class="clearfix" @click="changeFile(file)">
+          <div slot="header" class="title item" @click="changeFile(file)">
             <span>{{ file.title }}</span>
           </div>
 
           <el-col :span="17">
-            <div>{{ fileInfo.version }}</div>
+            <!-- <div>{{ fileInfo.version }}</div> -->
             <div style="border:0px solid black;" class="text item" @click="changeFile(file)">
               <!-- {{file.description}} -->
               <!-- <prism language="markdown" :plugins="['numbers']" :code="file.description"></prism> -->
@@ -272,11 +272,17 @@ export default {
   padding: 10px
 }
 
+.title {
+  font-size: 25px;
+  font-weight: 800;
+  color: #044586;
+}
+
 .downtext {
   margin: 10px;
   padding: 5px;
   font-size: 25px;
-  font-weight:800;
+  font-weight: 800;
 }
 
 .icons-container {
