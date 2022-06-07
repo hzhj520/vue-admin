@@ -48,12 +48,12 @@
           </el-col>
         </el-card>
       </el-col>
-      <el-col :span="5">
+      <el-col :span="5.5">
         <el-card class="box-card">
-          <div slot="header" class="clearfix">
+          <div slot="header" class="title2 item">
             <span>当前版本： {{ fileInfo.name }}-{{ fileInfo.version }} </span><br>
           </div>
-          <div>
+          <div style="border:0px solid black;" class="downbtn">
             <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download"
               @click="handleDownload(fileManual)">
               用户手册下载
@@ -72,7 +72,7 @@
         </el-card> -->
         <div class="temp"></div>
         <el-card class="box-card">
-          <div slot="header" class="clearfix">
+          <div slot="header" class="title2 item">
             <span>历史版本：</span>
           </div>
           <ul>
@@ -272,12 +272,21 @@ export default {
   padding: 10px
 }
 
+.downbtn {
+  padding-left: 25px;
+}
+
 .title {
   font-size: 25px;
   font-weight: 800;
   color: #044586;
 }
 
+.title2 {
+  font-size: 20px;
+  font-weight: 800;
+  color: #044586;
+}
 .downtext {
   margin: 10px;
   padding: 5px;
