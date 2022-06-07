@@ -72,7 +72,7 @@ export default {
         ],
       },
       dropzoneOptions: {
-        url: "/dev-api/file/upload2",
+        url: process.env.VUE_APP_BASE_API + "/file/upload2",
         paramName: "file",
         chunking: true,
         forceChunking: true,
@@ -80,7 +80,7 @@ export default {
         parallelUploads: 100,  //手动触发时一次最大可以上传多少个文件
         maxFiles: 1,  //一次上传的量
         maxFilesize: 1024 * 1024 * 10000, // megabytes
-        chunkSize: 1024 * 1024 * 50, // bytes
+        chunkSize: 1024 * 1024 * 20, // bytes
         addRemoveLinks: true,
         headers: { "My-Awesome-Header": "header value" },
         dictDefaultMessage: "拖入需要上传的文件",      //上传框默认显示文字

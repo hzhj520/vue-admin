@@ -2,11 +2,11 @@
   <div class="app-container">
     <div class="filter-container">
       <el-row class="demo-autocomplete">
-        <el-col :span="5">
-          补丁描述:
-          <el-input class="common-input" v-model="listQuery.subject" placeholder="请输入内容">
-          </el-input>
-        </el-col>
+        <div>
+            补丁描述:
+            <el-input class="common-input" width="100px" v-model="listQuery.subject" placeholder="请输入内容">
+            </el-input>
+        </div>
         <el-col :span="4">
           项目:
           <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.project"
@@ -286,3 +286,10 @@ export default {
   },
 };
 </script>
+
+
+<style>
+.el-select .el-input {
+  width: 130px;
+}
+</style>
