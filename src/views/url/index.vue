@@ -2,77 +2,18 @@
   <div class="mixin-components-container">
     <el-row>
       <el-card class="box-card">
-        <div style="margin-bottom:100px;">
-          <el-col :span="8" class="text-center">
-            <a class="pan-btn blue-btn" href="http://gerrit.eswin.cn" target="_blank">
-              代码评审
-            </a>
-          </el-col>
-          <el-col :span="8" class="text-center">
-            <a class="pan-btn light-blue-btn" href="http://10.100.130.52:8080" target="_blank">
-              版本构建
-            </a>
-          </el-col>
-          <el-col :span="8" class="text-center">
-            <a class="pan-btn red-btn" href="https://oa.eswin.com" target="_blank">
-              OA系统
-            </a>
-          </el-col>
-        </div>
-        <div style="margin-bottom:200px;">
-          <el-col :span="8" class="text-center">
-            <a class="pan-btn pink-btn" href="http://mail.eswin.com" target="_blank">
-              邮件系统
-            </a>
-          </el-col>
-          <el-col :span="8" class="text-center">
-            <a class="pan-btn green-btn" href="http://jira.eswin.com" target="_blank">
-              JIRA系统
-            </a>
-          </el-col>
-          <el-col :span="8" class="text-center">
-            <a class="pan-btn tiffany-btn" href="http://10.12.130.2:8080/source" target="_blank">
-              代码检索
-            </a>
-          </el-col>
-        </div>
-        <div style="margin-bottom:300px;">
-          <el-col :span="8" class="text-center">
-            <a class="pan-btn yellow-btn" href="http://confluence.eswin.com" target="_blank">
-              Confluence
-            </a>
-          </el-col>
-          <el-col :span="8" class="text-center">
-            <a class="pan-btn tiffany-btn" href="http://10.12.130.2/source" target="_blank">
-              文件服务
-            </a>
-          </el-col>
-          <el-col :span="8" class="text-center">
-            <a class="pan-btn green-btn" href="https://10.12.130.2" target="_blank">
-              云下载
-            </a>
-          </el-col>
-        </div>
-        <div style="margin-bottom:400px;">
-          <el-col :span="8" class="text-center">
-            <a class="pan-btn tiffany-btn" href="http://cri-gitlab.eswin.cn" target="_blank">
-              个人代码托管
-            </a>
-          </el-col>
-          <el-col :span="8" class="text-center">
-            <a class="pan-btn red-btn" href="http://10.12.130.2:9000/" target="_blank">
-              测试平台
-            </a>
-          </el-col>
-          <el-col :span="8" class="text-center">
-            <a class="pan-btn light-blue-btn" href="" target="_blank">
-              其他……
-            </a>
-          </el-col>
-        </div>
-        <div style="margin-bottom:100px;">
-          <el-col :span="4" class="text-center"><br><br><br><br><br><br><br><br><br><br><br><br>
-          </el-col>
+        <div class="box-container">
+          <ul>
+            <li v-for="(item, index) in articleList" :key="index">
+              <a class="link-btn" :href="item.href" target="_black">
+                <!-- <img src="../../assets/url/Jenkins.png" alt=""> -->
+                <img :src="item.src" alt="">
+                <span>{{ item.title }}</span>
+                <!-- <span>{{ img_base_path }}</span> -->
+              </a>
+            </li>
+
+          </ul>
         </div>
       </el-card>
     </el-row>
@@ -97,6 +38,7 @@ export default {
       }
     }
     return {
+      img_base_path: "../../assets/url/",
       demo: {
         title: ''
       },
@@ -104,12 +46,13 @@ export default {
         title: [{ required: true, trigger: 'change', validator: validate }]
       },
       articleList: [
-        { title: '基础篇', href: 'https://juejin.im/post/59097cd7a22b9d0065fb61d2' },
-        { title: '登录权限篇', href: 'https://juejin.im/post/591aa14f570c35006961acac' },
-        { title: '实战篇', href: 'https://juejin.im/post/593121aa0ce4630057f70d35' },
-        { title: 'vue-admin-template 篇', href: 'https://juejin.im/post/595b4d776fb9a06bbe7dba56' },
-        { title: 'v4.0 篇', href: 'https://juejin.im/post/5c92ff94f265da6128275a85' },
-        { title: '优雅的使用 icon', href: 'https://juejin.im/post/59bb864b5188257e7a427c09' }
+        { title: '代码评审', href: 'http://gerrit.eswin.cn', src: require("../../assets/url/Gerrit.png") },
+        { title: '版本构建', href: 'http://10.100.130.52:8080', src: require("../../assets/url/Jenkins.png") },
+        { title: 'OA系统', href: 'https://oa.eswin.com', src: require("../../assets/url/OA.png") },
+        { title: '邮件系统', href: 'http://mail.eswin.com', src: require("../../assets/url/Email.png") },
+        { title: 'JIRA系统', href: 'http://jira.eswin.com', src: require("../../assets/url/Jira.png") },
+        // { title: '代码检索', href: 'http://10.12.130.2:8080/source' },
+        // { title: '代码检索', href: 'http://10.12.130.2:8080/source' }
       ]
     }
   }
@@ -117,12 +60,51 @@ export default {
 </script>
 
 <style scoped>
+.box-card {
+  padding: 50px 0
+}
+
 .mixin-components-container {
   background-color: #f0f2f5;
   padding: 30px;
   min-height: calc(100vh - 84px);
 }
+
 .component-item {
   min-height: 100px;
+}
+
+.box-container li {
+  list-style: none;
+  float: left;
+  width: 33%;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.box-container li a {
+  padding: 30px;
+  width: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.06);
+}
+
+.link-btn img {
+  width: 60px;
+  border-radius: 100%;
+  margin-bottom: 20px;
+}
+
+.link-btn span {
+  font-size: 20px;
+}
+
+.hidden {
+  visibility: hidden;
 }
 </style>

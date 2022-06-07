@@ -198,7 +198,7 @@ export const asyncRoutes = [{
     path: 'index',
     name: 'URL',
     component: () =>
-      import('@/views/url/index2'),
+      import('@/views/url/index'),
     meta: {
       title: '常用链接',
       icon: 'form'

@@ -1,6 +1,6 @@
 <template>
   <div class="app-container" v-loading="listLoading">
-    <el-row>
+    <el-row :gutter="30">
       <el-col :span="16">
         <el-card class="box-card" v-for="file in listSofts" :key="file.id" @click="test">
           <div slot="header" class="clearfix" @click="changeFile(file)">
@@ -25,21 +25,21 @@
                 <div slot="content">
                   {{ generateElementIconCode(item) }}
                 </div>
-                <div class="icon-item">
+                <!-- <div class="icon-item">
                   <i :class="'el-icon-' + item" />
-                </div>
+                </div> -->
               </el-tooltip>
             </div>
           </el-col>
           <el-col :span="6">
-            <div style="border:0px solid black;" class="text item">
+            <div style="border:0px solid black;" class="text">
               <!-- <i class="el-icon-date"></i> -->
               <!-- <div class="icon-item">
                 <i class="el-icon-download" />
               </div> -->
               <ul>
-                <li v-for="(v, index) in file.fileDetails" :key="index" class="text item">
-                  <a class="link-type" @click="changePlatformDownload(v)">
+                <li v-for="(v, index) in file.fileDetails" :key="index" class="downtext item">
+                  <a class="link-type text" @click="changePlatformDownload(v)">
                     {{ v.platform }}
                   </a>
                 </li>
@@ -51,12 +51,12 @@
       <el-col :span="5">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
-            <span>当前软件版本： {{ fileInfo.name }}-{{ fileInfo.version }} </span><br>
+            <span>当前版本： {{ fileInfo.name }}-{{ fileInfo.version }} </span><br>
           </div>
           <div>
             <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download"
               @click="handleDownload(fileManual)">
-              下载当前版本的用户手册
+              用户手册下载
             </el-button>
           </div>
         </el-card>
@@ -70,9 +70,10 @@
             </el-button>
           </div>
         </el-card> -->
+        <div class="temp"></div>
         <el-card class="box-card">
           <div slot="header" class="clearfix">
-            <span>下载该文件的历史版本</span>
+            <span>历史版本：</span>
           </div>
           <ul>
             <li v-for="(v, index) in listVersions" :key="index" class="text item">
@@ -263,6 +264,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.box-card {
+  padding: 0px 0
+}
+
+.temp {
+  padding: 10px
+}
+
+.downtext {
+  margin: 10px;
+  padding: 5px;
+  font-size: 25px;
+  font-weight:800;
+}
+
 .icons-container {
   margin: 10px 20px 0;
   overflow: hidden;
@@ -293,5 +309,6 @@ export default {
   .disabled {
     pointer-events: none;
   }
+
 }
 </style>

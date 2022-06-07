@@ -1,12 +1,18 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-row class="demo-autocomplete">
-        <div>
+      <el-row>
+        <el-col :span="5">
+          <div width="100px">
             补丁描述:
-            <el-input class="common-input" width="100px" v-model="listQuery.subject" placeholder="请输入内容">
+            <el-input class="el-input" v-model="listQuery.subject" placeholder="请输入内容">
             </el-input>
-        </div>
+
+            <!-- <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.subject"
+              placeholder="请输入内容">
+            </el-autocomplete> -->
+          </div>
+        </el-col>
         <el-col :span="4">
           项目:
           <el-autocomplete :hide-loading=true class="inline-input" clearable v-model="listQuery.project"
@@ -31,12 +37,14 @@
             :fetch-suggestions="queryOwners" placeholder="请输入内容" @select="handleFilter">
           </el-autocomplete>
         </el-col>
-        <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-          查找
-        </el-button>
-        <el-button class="filter-item" type="primary" @click="clearQuery">
-          清除
-        </el-button>
+        <el-col :span="2.5">
+          <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+            查找
+          </el-button>
+          <el-button class="filter-item" type="primary" @click="clearQuery">
+            清除
+          </el-button>
+        </el-col>
       </el-row>
       <el-checkbox-group v-model="checkboxVal">
         <el-checkbox v-for="val in formTheadOptions" :label="val" :key="val">
