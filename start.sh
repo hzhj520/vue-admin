@@ -1,4 +1,7 @@
+git pull origin
 export VERSION=0.4
-docker build -t efficacy-forntend:$VERSION .
+export NAME=efficacy-forntend
+docker rm -f $NAME
+docker build -t $NAME:$VERSION .
 sleep 5
-docker run -it -d --name efficacy-forntend -p 80:80 efficacy-forntend:$VERSION
+docker run -it -d --name $NAME -p 80:80 $NAME:$VERSION
